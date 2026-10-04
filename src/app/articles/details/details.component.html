@@ -62,26 +62,107 @@
     </figure>
 
     <!-- Article body -->
-<!--
     <article
-      #articleBody
-      class="article-content"
-      [innerHTML]="article.content"
+        #articleBody
+        data-article-body
+        [attr.data-article-id]="article?.id"
+        [attr.data-article-slug]="article?.slug"
+        class="article-content"
+      >
 
-    ></article> -->
+        @for (
+          block of visibleContentBlocks;
+          track $index
+        ) {
 
-    <article
-      #articleBody
-      data-article-body
-      [attr.data-article-id]="article.id"
-      [attr.data-article-slug]="article.slug"
-      class="article-content"
+          <!-- =========================
+               TEXT
+          ========================== -->
 
-    >
-      <h1>{{ article.title }}</h1>
+          @if (block.type === 'text') {
 
-      <div [innerHTML]="article.content"></div>
-    </article>
+            <p class="article-paragraph reading-block">
+              {{ block.content }}
+            </p>
+
+          }
+
+
+          <!-- =========================
+               IMAGE
+          ========================== -->
+
+          @if (block.type === 'image' && block.url !== article.image) {
+
+            <figure class="article-media reading-block">
+
+              <div class="article-image-wrapper">
+
+                <img
+                  class="article-body-image"
+                  [src]="block.url || block.path"
+                  [alt]="block.alt || article?.title"
+                  loading="lazy"
+                />
+
+              </div>
+
+              @if (block.caption) {
+
+                <figcaption class="article-caption">
+                  <i class="bi bi-camera"></i>
+
+                  <span>
+                    {{ cleanCaption(block.caption) }}
+                  </span>
+                </figcaption>
+
+              }
+
+            </figure>
+
+          }
+
+        }
+
+
+        <!-- =========================
+             READ MORE
+        ========================== -->
+
+        @if (hasMoreContent) {
+
+          <div class="read-more-container">
+
+            <div class="read-more-fade"></div>
+
+            <button
+              type="button"
+              class="read-more-btn"
+              (click)="toggleReadMore()"
+            >
+
+              @if (!articleExpanded) {
+
+                <span>Read full story</span>
+
+                <i class="bi bi-chevron-down"></i>
+
+              } @else {
+
+                <span>Show less</span>
+
+                <i class="bi bi-chevron-up"></i>
+
+              }
+
+            </button>
+
+          </div>
+
+        }
+
+      </article>
 
     <!-- Article actions -->
 

@@ -21,12 +21,13 @@ import { Router } from '@angular/router';
 })
 export class NewsListComponent {
 
-  // newsSections:  NewsSection[]  = []
+
 
   @Input({ required: true }) section!: any;
 
   @Output() viewMore = new EventEmitter<string>();
   @Output() articleSelected = new EventEmitter<any>();
+
 
   constructor(
     private router: Router
@@ -57,5 +58,6 @@ export class NewsListComponent {
 
     return value.toString();
   }
+
 
 }

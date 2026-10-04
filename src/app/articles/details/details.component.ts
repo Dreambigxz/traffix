@@ -66,6 +66,7 @@ export class DetailsComponent implements OnInit {
 
   articleId: any
 
+
   ngOnInit()  {
 
     this.router.events
@@ -87,6 +88,7 @@ export class DetailsComponent implements OnInit {
         this.quickNav.reqServerData.get(`articles/${this.articleId}/`)
         .subscribe((res:any)=>{
           this.article = res.article;
+          this.articleExpanded = false;
             setTimeout(() => {
 
               const element =
@@ -190,5 +192,90 @@ export class DetailsComponent implements OnInit {
 
     button?.click();
   }
+
+    // areticles helper
+    /**
+   * Number of blocks displayed before
+   * the user clicks "Read full story".
+   */
+  readonly initialBlockLimit = 8;
+
+  articleExpanded = false;
+
+  get contentBlocks(): any[] {
+
+    return this.article?.content_blocks ?? [];
+  }
+
+
+  get visibleContentBlocks(): any[] {
+
+    if (this.articleExpanded) {
+      return this.contentBlocks;
+    }
+
+    return this.contentBlocks.slice(
+      0,
+      this.initialBlockLimit
+    );
+  }
+
+
+  get hasMoreContent(): boolean {
+
+    return (
+      this.contentBlocks.length >
+      this.initialBlockLimit
+    );
+  }
+
+
+  toggleReadMore(): void {
+
+    this.articleExpanded =
+      !this.articleExpanded;
+
+    /**
+     * EngagementService needs to know
+     * about newly rendered blocks.
+     *
+     * If your service's observer already
+     * watches DOM changes, this isn't needed.
+     */
+    if (this.articleExpanded) {
+
+      setTimeout(() => {
+
+        const element =
+          this.articleBody?.nativeElement;
+
+        if (!element) {
+          return;
+        }
+
+        // Newly rendered content now exists.
+        // Your engagement observer can see it.
+
+      });
+    }
+  }
+
+
+  cleanCaption(
+    caption: string
+  ): string {
+
+    if (!caption) {
+      return '';
+    }
+
+    return caption
+      .replace(
+        /^Image caption,\s*/i,
+        ''
+      )
+      .trim();
+  }
+
 
 }

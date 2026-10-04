@@ -53,7 +53,7 @@ export class HeaderComponent {
   segments(segments:any){
 
     this.subtitle = "";
-    
+
     let pageName = location.pathname
     if (pageName.includes("plan/new")) {
       this.pageName="Plan"
@@ -64,7 +64,7 @@ export class HeaderComponent {
       this.subtitle = "Task"
     }
     else if (segments.includes("article")) {
-      this.pageName=segments.pop()?.split("?")[0].replaceAll("-"," ").toUpperCase() || ''
+      this.pageName="Details"//segments.pop()?.split("?")[0].replaceAll("-"," ").toUpperCase() || ''
       this.subtitle = 'Article'
     }
     else if (location.pathname.includes('invites/users')) {

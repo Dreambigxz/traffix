@@ -132,6 +132,7 @@ export const PostHttpInterceptor: HttpInterceptorFn = (
   const isGet = req.method === 'GET';
   const isSafari = isSafariBrowser();
 
+  const hideSpinnerimportant = req.url.includes('hideSpinnerimportant') || req.url.includes('hideSpinner')
   // Toggle loader.
   if (
     (!req.url.includes('hideSpinner') && isGet) ||
@@ -248,7 +249,7 @@ export const PostHttpInterceptor: HttpInterceptorFn = (
           }
         };
 
-        if (isGet&&storeData.get("ads")?.sponsors.length||adsService.isOpen()) {
+        if (!hideSpinnerimportant&&isGet&&storeData.get("ads")?.sponsors.length||adsService.isOpen()) {
           adsService.open(storeData.get("ads"))
         }
       }

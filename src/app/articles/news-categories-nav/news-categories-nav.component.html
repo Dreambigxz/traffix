@@ -68,3 +68,67 @@
 
   }
 </div>
+
+<div
+  class="pagination-container"
+  *ngIf="pagination?.total_pages > 1"
+>
+
+  <!-- PREVIOUS -->
+  <button
+    type="button"
+    class="pagination-btn"
+    [disabled]="
+      !pagination?.previous ||
+      loadingMore()
+    "
+    (click)="loadPage('previous')"
+  >
+    @if (
+      loadingMore() &&
+      loadingDirection() === 'previous'
+    ) {
+      <span class="loading-spinner"></span>
+    } @else {
+      <i class="bi bi-chevron-left"></i>
+      <span>Previous</span>
+    }
+  </button>
+
+
+  <!-- PAGE INFO -->
+  <div class="page-info">
+    <span>Page</span>
+
+    <strong>
+      {{ pagination?.current_page }}
+    </strong>
+
+    <span>
+      of {{ pagination?.total_pages }}
+    </span>
+  </div>
+
+
+  <!-- NEXT -->
+  <button
+    type="button"
+    class="pagination-btn pagination-btn--next"
+    [disabled]="
+      !pagination?.next ||
+      loadingMore()
+    "
+    (click)="loadPage('next')"
+  >
+    @if (
+      loadingMore() &&
+      loadingDirection() === 'next'
+    ) {
+      <span class="loading-spinner"></span>
+    } @else {
+      <span>Next</span>
+      <i class="bi bi-chevron-right"></i>
+    }
+  </button>
+
+</div>

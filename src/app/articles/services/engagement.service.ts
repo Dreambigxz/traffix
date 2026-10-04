@@ -329,16 +329,11 @@ export class EngagementService implements OnDestroy {
 
     const article = this.articleElement;
 
-    console.log({article});
-
-
     let elements = Array.from(
       article.querySelectorAll<HTMLElement>(
         'div, h1, h2, h3, h4, p, li, blockquote, figcaption, .reading-block'
       ),
     );
-
-    console.log({elements});
 
     /*
      * Support content that only uses div elements.
@@ -449,14 +444,14 @@ export class EngagementService implements OnDestroy {
         this.config.wordsPerMinute
       ) * 60_000;
 
-    console.log('Engagement tracker ready:', {
-      blocks: this.blocks.length,
-      totalWords: this.totalWords,
-      estimatedReadingSeconds: Math.round(
-        this.estimatedReadingMilliseconds /
-          1000,
-      ),
-    });
+    // console.log('Engagement tracker ready:', {
+    //   blocks: this.blocks.length,
+    //   totalWords: this.totalWords,
+    //   estimatedReadingSeconds: Math.round(
+    //     this.estimatedReadingMilliseconds /
+    //       1000,
+    //   ),
+    // });
 
     return true;
   }
@@ -482,8 +477,6 @@ export class EngagementService implements OnDestroy {
         this.estimatedReadingMilliseconds / 1000,
       ),
     }
-
-    console.log({payload});
 
     this.quickNav.reqServerData.post(
       this.config.openEndpoint,
@@ -880,9 +873,6 @@ export class EngagementService implements OnDestroy {
     const reading =
       this.getReadingStats();
 
-      console.log({reading});
-
-
     const progress =
       Math.round(
         reading.readRatio * 100,
@@ -900,9 +890,6 @@ export class EngagementService implements OnDestroy {
         this.config.minimumCompletionProgress &&
       this.maximumDepth >=
         this.config.minimumCompletionDepth;
-
-
-        console.log({canComplete});
 
     if (!canComplete) {
       return;
@@ -1067,18 +1054,12 @@ export class EngagementService implements OnDestroy {
     this.pendingPayload = null;
     this.requestInProgress = true;
 
-    console.log({payload});
-
-
     this.quickNav.reqServerData.patch(
       `update/${payload.engagement_id}/`,
       payload,
     ).subscribe({
       next: (response:any) => {
         this.requestInProgress = false;
-
-          console.log({response});
-
         if (
           response.completed ||
           payload.completed
