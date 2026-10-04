@@ -1,0 +1,328 @@
+<button
+  type="button"
+  class="progress-side-button"
+  [class.hidden]="opened()"
+  (click)="open()"
+  aria-label="Open daily engagement progress"
+>
+  <span class="side-icon">⚡</span>
+
+  <span class="side-progress">
+    {{ overallProgress }}%
+  </span>
+</button>
+
+
+@if (opened()) {
+  <div
+    class="progress-backdrop"
+    (click)="close()"
+  ></div>
+
+  <aside
+    class="progress-drawer"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Daily engagement progress"
+  >
+    <header class="drawer-header">
+      <div>
+        <small>Daily engagement</small>
+        <h2>Your progress</h2>
+      </div>
+
+      <button
+        type="button"
+        class="close-button"
+        (click)="close()"
+        aria-label="Close progress"
+      >
+        ×
+      </button>
+    </header>
+
+    <div class="engagement-alert" role="alert">
+        <div class="alert-icon">
+          <i class="bi bi-gift-fill"></i>
+        </div>
+
+        <div class="alert-content">
+          <h4>Stay Active & Earn!</h4>
+
+          <p>
+            Read posts, like, and comment to keep your account active.
+            Complete your daily target to earn a <strong>free</strong> reward of
+            <strong>${{rewardList}} </strong>.
+          </p>
+        </div>
+      </div>
+
+
+    <div class="drawer-content">
+      @if (
+        ranking;
+        as data
+      ) {
+        @if (
+          currentUser;
+          as user
+        ) {
+
+          <!-- Overall progress -->
+
+          <section
+            class="progress-hero"
+            [class.completed]="rewardReady"
+          >
+            <div
+              class="progress-circle"
+              [style.--progress]="
+                overallProgress + '%'
+              "
+            >
+              <div class="circle-content">
+                @if (rewardReady) {
+                  <span class="complete-check">
+                    ✓
+                  </span>
+                } @else {
+                  <strong>
+                    {{ overallProgress }}%
+                  </strong>
+
+                  <small>completed</small>
+                }
+              </div>
+            </div>
+
+            <div class="hero-content">
+              @if (rewardReady) {
+                <span class="hero-label">
+                  Goal completed
+                </span>
+
+                <h3>Reward unlocked!</h3>
+
+                <p>
+                  You completed today’s engagement
+                  requirements.
+
+                </p>
+                <div class="reward-amount">
+                  ${{ user.reward_amount }}
+                </div>
+
+                <p class="alert-increase">
+                  <strong>Keep engaging on new posts to increase your earning!</strong>
+                </p>
+              } @else {
+                <span class="hero-label">
+                  Today’s challenge
+                </span>
+
+                <h3>Keep engaging</h3>
+
+                <p>
+                  Complete the likes and comments goals
+                  below to qualify for today’s reward. ({{rewardList}} USD)
+                </p>
+              }
+            </div>
+          </section>
+
+
+          <!-- Likes target -->
+
+          <section
+            class="goal-card"
+            [class.goal-completed]="
+              user.likes >=
+              data.requirements.likes
+            "
+          >
+            <div class="goal-top">
+              <div class="goal-information">
+                <div class="goal-icon like">
+                  ♥
+                </div>
+
+                <div>
+                  <h3>Like articles</h3>
+
+                  @if (
+                    user.likes >=
+                    data.requirements.likes
+                  ) {
+                    <p class="success-text">
+                      Target completed
+                    </p>
+                  } @else {
+                    <p>
+                      {{
+                        remaining(
+                          user.likes,
+                          data.requirements.likes
+                        )
+                      }}
+                      more likes needed
+                    </p>
+                  }
+                </div>
+              </div>
+
+              <div class="goal-count">
+                <strong>{{ user.likes }}</strong>
+                <span>
+                  / {{ data.requirements.likes }}
+                </span>
+              </div>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill likes"
+                [style.width.%]="likesProgress"
+              ></div>
+            </div>
+
+            <div class="progress-footer">
+              <span>Current likes</span>
+
+              <strong>
+                {{ likesProgress }}%
+              </strong>
+            </div>
+          </section>
+
+
+          <!-- Comments target -->
+
+          <section
+            class="goal-card"
+            [class.goal-completed]="
+              user.comments >=
+              data.requirements.comments
+            "
+          >
+            <div class="goal-top">
+              <div class="goal-information">
+                <div class="goal-icon comment">
+                  💬
+                </div>
+
+                <div>
+                  <h3>Post comments</h3>
+
+                  @if (
+                    user.comments >=
+                    data.requirements.comments
+                  ) {
+                    <p class="success-text">
+                      Target completed
+                    </p>
+                  } @else {
+                    <p>
+                      {{
+                        remaining(
+                          user.comments,
+                          data.requirements.comments
+                        )
+                      }}
+                      more comments needed
+                    </p>
+                  }
+                </div>
+              </div>
+
+              <div class="goal-count">
+                <strong>
+                  {{ user.comments }}
+                </strong>
+
+                <span>
+                  / {{ data.requirements.comments }}
+                </span>
+              </div>
+            </div>
+
+            <div class="progress-track">
+              <div
+                class="progress-fill comments"
+                [style.width.%]="commentsProgress"
+              ></div>
+            </div>
+
+            <div class="progress-footer">
+              <span>Current comments</span>
+
+              <strong>
+                {{ commentsProgress }}%
+              </strong>
+            </div>
+          </section>
+
+
+          <!-- Eligibility status -->
+
+          @if (rewardReady) {
+            <section class="status-card eligible">
+              <div class="status-icon">
+                ✓
+              </div>
+
+              <div>
+                <h3>You are eligible</h3>
+
+                <p>
+                  You have met today’s likes and
+                  comments requirements.
+                </p>
+              </div>
+            </section>
+          } @else {
+            <section class="status-card">
+              <div class="status-icon">
+                ⚡
+              </div>
+
+              <div>
+                <h3>Reward still in progress</h3>
+
+                <p>
+                  Both targets must reach 100% before
+                  your reward can be unlocked.
+                </p>
+              </div>
+            </section>
+          }
+
+        } @else {
+          <div class="empty-state">
+            <span>🌱</span>
+
+            <h3>Start engaging today</h3>
+
+            <p>
+              Like or comment on an article to begin
+              your daily progress.
+            </p>
+          </div>
+        }
+      } @else {
+        <!-- <div class="loading-state">
+          <span class="loader"></span>
+          <p>Loading your progress…</p>
+        </div> -->
+
+        <button
+          type="submit"
+          class="list-button"
+          (click)="close()"
+          >
+          Login to continue
+
+        </button>
+      }
+    </div>
+  </aside>
+}

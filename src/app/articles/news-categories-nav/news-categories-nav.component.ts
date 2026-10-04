@@ -6,15 +6,9 @@ import {
   signal
 } from '@angular/core';
 
-import { CommonModule } from '@angular/common';
-
 import {
-  NewsListComponent
-} from '../news-list/news-list.component';
-
-import {
-  QuickNavService
-} from '../../reuseables/services/quick-nav.service';
+  CommonModule
+} from '@angular/common';
 
 import {
   Router,
@@ -30,13 +24,21 @@ import {
   firstValueFrom
 } from 'rxjs';
 
+import {
+  NewsListComponent
+} from '../news-list/news-list.component';
+
+import {
+  QuickNavService
+} from '../../reuseables/services/quick-nav.service';
+
 
 @Component({
   selector: 'app-news-categories-nav',
 
   imports: [
     CommonModule,
-    NewsListComponent,
+    NewsListComponent
   ],
 
   templateUrl:
@@ -47,12 +49,23 @@ import {
 })
 export class NewsCategoriesNavComponent {
 
+  // ==========================================
+  // INPUT / OUTPUT
+  // ==========================================
+
   @Input()
   activeCategory = 'all';
 
   @Output()
   categoryChanged =
     new EventEmitter<string>();
+
+
+  // ==========================================
+  // ARTICLES
+  // ==========================================
+
+  articles: any[] = [];
 
 
   // ==========================================
@@ -66,7 +79,11 @@ export class NewsCategoriesNavComponent {
       icon: 'bi-grid'
     },
 
-    {},
+    {
+      key: 'latest',
+      label: 'Latest',
+      icon: 'bi-newspaper'
+    },
 
     {
       key: 'sports',
@@ -94,15 +111,6 @@ export class NewsCategoriesNavComponent {
   ];
 
 
-  // ==========================================
-  // NEWS
-  // ==========================================
-
-  newsSections: any[] = [];
-
-  filteredSections: any[] = [];
-
-  articles: any;
 
 
   // ==========================================
@@ -115,20 +123,19 @@ export class NewsCategoriesNavComponent {
     signal<boolean>(false);
 
   loadingDirection =
-    signal<'next' | 'previous' | null>(null);
+    signal<'next' | 'previous' | null>(
+      null
+    );
 
 
   /**
-   * Stores pages that have already been
-   * downloaded.
+   * Cache each API page.
    *
-   * {
-   *   1: [...],
-   *   2: [...],
-   *   3: [...]
-   * }
+   * pageCache[1] = [...]
+   * pageCache[2] = [...]
    */
-  pageCache: Record<number, any[]> = {};
+  pageCache:
+    Record<number, any[]> = {};
 
 
   constructor(
@@ -141,7 +148,7 @@ export class NewsCategoriesNavComponent {
   // INIT
   // ==========================================
 
-  async ngOnInit() {
+  ngOnInit(): void {
 
     this.router.events
       .pipe(
@@ -154,74 +161,61 @@ export class NewsCategoriesNavComponent {
       .subscribe(() => {
 
         const url =
-          new URL(window.location.href);
+          new URL(
+            window.location.href
+          );
 
-        if (url.pathname !== '/') {
+        if (
+          url.pathname !== '/'
+        ) {
           return;
         }
 
-        this.initializeNews();
+
+        /**
+         * Prevent reloading if page 1
+         * already exists.
+         */
+        if (
+          !this.pageCache[1]
+        ) {
+
+          this.initializeNews();
+        }
+
       });
   }
 
 
   // ==========================================
-  // INITIAL NEWS
+  // INITIAL LOAD
   // ==========================================
 
-  async initializeNews(): Promise<void> {
-
-    /**
-     * If articles already exist in QuickNav,
-     * use them first.
-     */
-    const storedArticles =
-      this.quickNav.storeData.get(
-        'articles'
-      );
-
-    if (storedArticles?.length) {
-
-      this.newsSections =
-        storedArticles;
-
-      /**
-       * We don't return here because
-       * pagination may not exist locally.
-       *
-       * If you store pagination separately,
-       * this can be improved further.
-       */
-    }
-
-
-    /**
-     * If page 1 has already been cached
-     * inside this component, don't request it.
-     */
-    if (this.pageCache[1]) {
-
-      this.newsSections =
-        this.pageCache[1];
-
-      return;
-    }
-
+  async initializeNews():
+    Promise<void> {
 
     try {
 
       const res: any =
         await this.fetchNews(
-          'articles/'
+          'articles/?page=1'
         );
 
 
-      this.newsSections =
-        this.quickNav.storeData.get(
-          'articles'
-        ) ??
-        res?.main?.articles ??
-        [];
+      const incoming =
+        res?.main?.articles ?? [];
+
+
+      // Current visible page
+      this.articles = [
+        ...incoming
+      ];
+
+
+      // Cache page 1
+      this.pageCache[1] = [
+        ...incoming
+      ];
 
 
       this.pagination =
@@ -229,25 +223,16 @@ export class NewsCategoriesNavComponent {
         null;
 
 
-      // Cache page 1
-      if (
-        this.pagination?.current_page
-      ) {
+      // Build category tabs
+      this.updateCategories(
+        incoming
+      );
 
-        this.pageCache[
-          this.pagination.current_page
-        ] = this.cloneSections(
-          this.newsSections
-        );
-      }
-
-
-      this.updateLatestCategory();
 
     } catch (error) {
 
       console.error(
-        'Failed to initialize news:',
+        'Failed to load articles:',
         error
       );
     }
@@ -255,17 +240,124 @@ export class NewsCategoriesNavComponent {
 
 
   // ==========================================
-  // FETCH NEWS
+  // API
   // ==========================================
 
   async fetchNews(
-    url: string = 'articles/'
+    url: string
   ): Promise<any> {
 
     return await firstValueFrom(
       this.quickNav.reqServerData.get(
         url
       )
+    );
+  }
+
+
+  // ==========================================
+  // CATEGORY GENERATOR
+  // ==========================================
+
+  private updateCategories(
+    articles: any[]
+  ): void {
+
+    for (
+      const article of articles
+    ) {
+
+      const key =
+        article?.category_key
+          ?.trim()
+          ?.toLowerCase();
+
+
+      if (!key) {
+        continue;
+      }
+
+
+      const exists =
+        this.categories.some(
+          category =>
+            category.key === key
+        );
+
+
+      if (exists) {
+        continue;
+      }
+
+
+      this.categories.push({
+
+        key,
+
+        label:
+          article.category ||
+          key,
+
+        color:
+          article.category_color ||
+          null,
+
+        icon:
+          article.category_icon ||
+          'bi-newspaper'
+      });
+    }
+  }
+
+
+  // ==========================================
+  // CATEGORY SELECT
+  // ==========================================
+
+  selectCategory(
+    category: string
+  ): void {
+
+    this.activeCategory =
+      category;
+
+    this.categoryChanged.emit(
+      category
+    );
+  }
+
+
+  // ==========================================
+  // FILTER ARTICLES
+  // ==========================================
+
+  get filteredArticles():
+    any[] {
+
+    const category =
+      this.activeCategory
+        ?.trim()
+        ?.toLowerCase();
+
+
+    // ALL
+    if (
+      !category ||
+      category === 'all'
+    ) {
+
+      return this.articles;
+    }
+
+
+    // FILTER CURRENT PAGE
+    return this.articles.filter(
+      article =>
+
+        article?.category_key
+          ?.trim()
+          ?.toLowerCase() ===
+        category
     );
   }
 
@@ -286,20 +378,18 @@ export class NewsCategoriesNavComponent {
     }
 
 
-    // ------------------------------------------
-    // CHECK BUTTON AVAILABILITY
-    // ------------------------------------------
-
+    // Check direction
     if (
       type === 'next' &&
-      !this.pagination.next
+      !this.pagination.has_next
     ) {
       return;
     }
 
+
     if (
       type === 'previous' &&
-      !this.pagination.previous
+      !this.pagination.has_previous
     ) {
       return;
     }
@@ -317,29 +407,31 @@ export class NewsCategoriesNavComponent {
         : currentPage - 1;
 
 
-    // ------------------------------------------
-    // PAGE VALIDATION
-    // ------------------------------------------
-
+    // Invalid page
     if (
       targetPage < 1 ||
       targetPage >
-        this.pagination.total_pages
+        Number(
+          this.pagination.total_pages
+        )
     ) {
       return;
     }
 
 
-    // ------------------------------------------
-    // CACHED PAGE
-    // ------------------------------------------
+    // ========================================
+    // ALREADY CACHED
+    // ========================================
 
-    if (this.pageCache[targetPage]) {
+    if (
+      this.pageCache[targetPage]
+    ) {
 
-      this.newsSections =
-        this.cloneSections(
-          this.pageCache[targetPage]
-        );
+      this.articles = [
+        ...this.pageCache[
+          targetPage
+        ]
+      ];
 
 
       this.updatePaginationLocally(
@@ -347,69 +439,57 @@ export class NewsCategoriesNavComponent {
       );
 
 
-      this.updateLatestCategory();
-
-      this.scrollToNews();
-
       return;
     }
 
 
-    // ------------------------------------------
-    // FETCH NEW PAGE
-    // ------------------------------------------
+    // ========================================
+    // FETCH PAGE
+    // ========================================
 
     this.loadingMore.set(true);
 
-    this.loadingDirection.set(type);
+    this.loadingDirection.set(
+      type
+    );
 
 
     try {
 
       const res: any =
         await this.fetchNews(
-          `articles/next/?page=${targetPage}&hideSpinnerimportant`
+          `articles/?page=${targetPage}&hideSpinnerimportant`
         );
 
 
       const incoming =
-        res?.main?.articles_next ??
-        res?.main?.articles ??
-        [];
+        res?.main?.articles ?? [];
 
 
-      // ------------------------------------------
-      // CACHE THE PAGE
-      // ------------------------------------------
-
-      this.pageCache[targetPage] =
-        this.cloneSections(
-          incoming
-        );
+      // Cache it
+      this.pageCache[
+        targetPage
+      ] = [
+        ...incoming
+      ];
 
 
-      // ------------------------------------------
-      // DISPLAY ONLY THIS PAGE
-      // ------------------------------------------
-
-      this.newsSections =
-        this.cloneSections(
-          incoming
-        );
+      // Display this page
+      this.articles = [
+        ...incoming
+      ];
 
 
-      // ------------------------------------------
-      // USE SERVER PAGINATION
-      // ------------------------------------------
+      // Discover new categories
+      this.updateCategories(
+        incoming
+      );
 
+
+      // Pagination from backend
       this.pagination =
         res?.main?.pagination ??
         this.pagination;
-
-
-      this.updateLatestCategory();
-
-      this.scrollToNews();
 
 
     } catch (error) {
@@ -419,17 +499,22 @@ export class NewsCategoriesNavComponent {
         error
       );
 
+
     } finally {
 
-      this.loadingMore.set(false);
+      this.loadingMore.set(
+        false
+      );
 
-      this.loadingDirection.set(null);
+      this.loadingDirection.set(
+        null
+      );
     }
   }
 
 
   // ==========================================
-  // LOCAL PAGINATION
+  // CACHED PAGE PAGINATION
   // ==========================================
 
   private updatePaginationLocally(
@@ -445,12 +530,15 @@ export class NewsCategoriesNavComponent {
     this.pagination = {
       ...this.pagination,
 
-      current_page: page,
+      current_page:
+        page,
 
-      /**
-       * Your template only needs these
-       * to be truthy/falsy for cached pages.
-       */
+      has_previous:
+        page > 1,
+
+      has_next:
+        page < totalPages,
+
       previous:
         page > 1
           ? true
@@ -459,189 +547,8 @@ export class NewsCategoriesNavComponent {
       next:
         page < totalPages
           ? true
-          : null,
-
-      has_previous:
-        page > 1,
-
-      has_next:
-        page < totalPages
+          : null
     };
-  }
-
-
-  // ==========================================
-  // CLONE SECTIONS
-  // ==========================================
-
-  private cloneSections(
-    sections: any[]
-  ): any[] {
-
-    return sections.map(
-      section => ({
-        ...section,
-
-        articles: [
-          ...(section.articles ?? [])
-        ]
-      })
-    );
-  }
-
-
-  // ==========================================
-  // CATEGORY
-  // ==========================================
-
-  selectCategory(
-    category: string
-  ): void {
-
-    this.activeCategory =
-      category;
-
-    this.categoryChanged.emit(
-      category
-    );
-  }
-
-
-  // ==========================================
-  // FILTERED NEWS
-  // ==========================================
-
-  get filteredNewsSections() {
-
-    const category =
-      this.activeCategory
-        ?.trim()
-        .toLowerCase();
-
-
-    if (
-      !category ||
-      category === 'all'
-    ) {
-
-      return this.newsSections;
-    }
-
-
-    if (
-      category === 'latest'
-    ) {
-
-      return this.latestNews;
-    }
-
-
-    return this.newsSections.filter(
-      section =>
-
-        section.key
-          ?.toLowerCase() === category ||
-
-        section.title
-          ?.toLowerCase() === category
-    );
-  }
-
-
-  // ==========================================
-  // LATEST NEWS
-  // ==========================================
-
-  get latestNews() {
-
-    const now =
-      Date.now();
-
-    const oneHour =
-      60 * 60 * 1000;
-
-
-    return this.newsSections
-      .map(
-        section => ({
-
-          ...section,
-
-          articles:
-            (
-              section.articles ??
-              []
-            ).filter(
-              (article: any) => {
-
-                const articleTime =
-                  new Date(
-                    article.time
-                  ).getTime();
-
-
-                if (
-                  Number.isNaN(
-                    articleTime
-                  )
-                ) {
-                  return false;
-                }
-
-
-                const difference =
-                  now - articleTime;
-
-
-                return (
-                  difference >= 0 &&
-                  difference <= oneHour
-                );
-              }
-            )
-        })
-      )
-      .filter(
-        section =>
-          section.articles.length > 0
-      );
-  }
-
-
-  // ==========================================
-  // LATEST CATEGORY
-  // ==========================================
-
-  private updateLatestCategory(): void {
-
-    if (
-      this.latestNews.length
-    ) {
-
-      this.categories[1] = {
-        key: 'latest',
-        label: 'Latest',
-        icon: 'bi-newspaper'
-      };
-
-      return;
-    }
-
-
-    this.categories[1] = {};
-  }
-
-
-  // ==========================================
-  // SCROLL
-  // ==========================================
-
-  private scrollToNews(): void {
-
-    // window.scrollTo({
-    //   top: 0,
-    //   behavior: 'smooth'
-    // });
   }
 
 

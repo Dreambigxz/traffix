@@ -1,0 +1,79 @@
+<section class="news-section">
+  <div class="section-header">
+    <div class="section-title">
+      <span
+        class="title-marker"
+        [style.backgroundColor]="section.color"
+      ></span>
+
+      <h2>{{ section.title|titlecase }}</h2>
+    </div>
+
+    <!-- <button
+      type="button"
+      class="view-more-button"
+      (click)="openCategory()"
+    >
+      <span>View More</span>
+      <i class="bi bi-chevron-right"></i>
+    </button> -->
+  </div>
+
+  <div class="articles-list">
+    @for (
+      article of section.articles;
+      track article.id
+    ) {
+      <button
+        type="button"
+        class="article-item"
+        (click)="openArticle(article)"
+      >
+        <img
+          class="article-image"
+          [src]="article.image || article.image_url"
+          [alt]="article.title"
+          loading="lazy"
+        />
+
+        <div class="article-content">
+          <h3>{{ article.title }}</h3>
+
+          <div class="article-details">
+            <div class="article-meta">
+              <span>{{ article.time|momentAgo }}</span>
+
+              <span class="meta-divider"></span>
+
+              <span
+                class="article-category"
+                [style.color]="section.color"
+              >
+                {{ article.category }}
+              </span>
+            </div>
+
+            <div class="article-engagement">
+              <span class="engagement-item">
+                <i class="bi bi-heart"></i>
+                {{ formatCount(article.likes) }}
+              </span>
+
+              <span class="engagement-item">
+                <i class="bi bi-chat"></i>
+                {{ formatCount(article.comments) }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <i class="bi bi-chevron-right article-arrow"></i>
+      </button>
+    } @empty {
+      <div class="empty-state">
+        <i class="bi bi-newspaper"></i>
+        <p>No news is available in this category.</p>
+      </div>
+    }
+  </div>
+</section>

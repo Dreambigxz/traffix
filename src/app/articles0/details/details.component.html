@@ -1,0 +1,411 @@
+<app-header
+  [wallet]="quickNav.storeData.store['wallet']"/>
+
+<div class="article-page">
+  <!-- Navigation -->
+  <main *ngIf="article" class="article-container">
+    <!-- Article heading -->
+
+    <section class="article-heading ">
+      <span
+        class="category-badge"
+        [style.backgroundColor]="article.category_color"
+      >
+        {{ article.category }}
+      </span>
+
+      <h1>{{ article.title }}</h1>
+
+      <p class="article-excerpt">
+        {{ article.excerpt }}
+      </p>
+
+      <div class="article-information">
+        <div class="author-information">
+          @if (article.author.avatar) {
+            <img
+              class="author-avatar"
+              [src]="article.author.avatar"
+              [alt]="article.author.name"
+            />
+          } @else {
+            <div class="avatar-placeholder author-avatar">
+              {{ getInitials(article.author.name) }}
+            </div>
+          }
+
+          <div>
+            <strong>{{ article.author.name }}</strong>
+
+            <span>
+              {{ article.published_at | date:'mediumDate' }}
+              · {{ article.reading_time }} min read
+              {{article.published_at }}
+            </span>
+          </div>
+        </div>
+
+        <div class="article-views">
+          <i class="bi bi-eye"></i>
+          {{ formatCount(article.views) }}
+        </div>
+      </div>
+    </section>
+
+    <!-- Main image -->
+
+    <figure class="article-cover">
+      <img
+        [src]="article.image || article.image_url"
+        [alt]="article.title"
+      />
+    </figure>
+
+    <!-- Article body -->
+    <article
+        #articleBody
+        data-article-body
+        [attr.data-article-id]="article?.id"
+        [attr.data-article-slug]="article?.slug"
+        class="article-content"
+      >
+
+        @for (
+          block of visibleContentBlocks;
+          track $index
+        ) {
+
+          <!-- =========================
+               TEXT
+          ========================== -->
+
+          @if (block.type === 'text') {
+
+            <p class="article-paragraph reading-block">
+              {{ block.content }}
+            </p>
+
+          }
+
+
+          <!-- =========================
+               IMAGE
+          ========================== -->
+
+          @if (block.type === 'image' && block.url !== article.image) {
+
+            <figure class="article-media reading-block">
+
+              <div class="article-image-wrapper">
+
+                <img
+                  class="article-body-image"
+                  [src]="block.url || block.path"
+                  [alt]="block.alt || article?.title"
+                  loading="lazy"
+                />
+
+              </div>
+
+              @if (block.caption) {
+
+                <figcaption class="article-caption">
+                  <i class="bi bi-camera"></i>
+
+                  <span>
+                    {{ cleanCaption(block.caption) }}
+                  </span>
+                </figcaption>
+
+              }
+
+            </figure>
+
+          }
+
+        }
+
+
+        <!-- =========================
+             READ MORE
+        ========================== -->
+
+        @if (hasMoreContent) {
+
+          <div class="read-more-container">
+
+            <div class="read-more-fade"></div>
+
+            <button
+              type="button"
+              class="read-more-btn"
+              (click)="toggleReadMore()"
+            >
+
+              @if (!articleExpanded) {
+
+                <span>Read full story</span>
+
+                <i class="bi bi-chevron-down"></i>
+
+              } @else {
+
+                <span>Show less</span>
+
+                <i class="bi bi-chevron-up"></i>
+
+              }
+
+            </button>
+
+          </div>
+
+        }
+
+      </article>
+
+    <!-- Article actions -->
+
+    <section class="article-actions">
+      <button
+        type="button"
+        class="like-button"
+        [class.liked]="article.liked_by_user"
+        (click)="toggleArticleLike()"
+      >
+        <i
+          class="bi"
+          [ngClass]="
+            article.liked_by_user
+              ? 'bi-heart-fill'
+              : 'bi-heart'
+          "
+        ></i>
+
+        <span>
+          {{ article.liked_by_user ? 'Liked' : 'Like' }}
+        </span>
+
+        <strong>{{ formatCount(article.likes) }}</strong>
+      </button>
+
+      <span
+        href="#comments"
+        class="comment-action"
+      >
+        <i class="bi bi-chat"></i>
+        <span>Comments</span>
+        <strong>{{ article.comments_count }}</strong>
+      </span>
+
+      <button
+        type="button"
+        class="share-button"
+      >
+        <i class="bi bi-share"></i>
+        <span>Share</span>
+      </button>
+    </section>
+
+    <!-- Comment area -->
+
+    <section
+      id="comments"
+      class="comments-section"
+    >
+      <div class="comments-heading">
+        <div>
+          <span class="section-label">
+            Discussion
+          </span>
+
+          <h2>
+            Comments
+            <span>{{ article.comments_count }}</span>
+          </h2>
+        </div>
+
+        <div class="comment-users">
+          @for (
+            comment of article.comments.slice(0, 4);
+            track comment.id
+          ) {
+            @if (comment.user.avatar) {
+              <img
+                [src]="comment.user.avatar"
+                [alt]="comment.user.name"
+              />
+            } @else {
+              <div class="small-avatar">
+                {{ getInitials(comment.user.name) }}
+              </div>
+            }
+          }
+
+          @if (article.comments_count > 4) {
+            <span class="additional-users">
+              +{{ article.comments_count - 4 }}
+            </span>
+          }
+        </div>
+      </div>
+
+      <!-- Comment form -->
+
+      @if (!article.user_has_commented) {
+        <form
+          class="comment-form"
+          [formGroup]="commentForm"
+          (ngSubmit)="submitComment()"
+        >
+          <div class="current-user-avatar">
+            YO
+          </div>
+
+          <div class="comment-input-area">
+            <textarea
+              formControlName="content"
+              rows="4"
+              maxlength="1000"
+              placeholder="Share your thoughts about this story..."
+            ></textarea>
+
+            <div class="comment-form-footer">
+              <span
+                class="character-count"
+                [class.limit]="commentContent.length > 950"
+              >
+                {{ commentContent.length }}/1000
+              </span>
+
+              <button
+                type="submit"
+                class="btn btn-common list-button"
+                [disabled]="
+                  commentForm.invalid ||
+                  isSubmittingComment
+                "
+              >
+                @if (isSubmittingComment) {
+                  <span class="button-spinner"></span>
+                  Posting
+                } @else {
+                  <i class="bi bi-send-fill"></i>
+                  Post comment
+                }
+              </button>
+            </div>
+
+            @if (
+              commentForm.controls.content.invalid &&
+              commentForm.controls.content.touched
+            ) {
+              <small class="comment-error">
+                Your comment must contain at least
+                3 characters.
+              </small>
+            }
+          </div>
+        </form>
+      } @else {
+        <div class="comment-success">
+          <div class="success-icon">
+            <i class="bi bi-check-lg"></i>
+          </div>
+
+          <div>
+            <strong>Thank you for contributing</strong>
+
+            <p>
+              Your comment has been successfully posted.
+            </p>
+            <strong>Keep engaging in more posts to earn free 0.50 - 1 dollar</strong>
+          </div>
+        </div>
+      }
+
+      <!-- Comments list -->
+
+      <div class="comments-list">
+        @for (
+          comment of article.comments;
+          track comment.id
+        ) {
+          <article class="comment-card">
+            <div class="comment-avatar">
+              @if (comment.user.avatar) {
+                <img
+                  [src]="comment.user.avatar"
+                  [alt]="comment.user.name"
+                />
+              } @else {
+                <div class="avatar-placeholder">
+                  {{ getInitials(comment.user.name) }}
+                </div>
+              }
+            </div>
+
+            <div class="comment-body">
+              <div class="comment-header">
+                <div>
+                  <strong>{{ comment.user.name }}</strong>
+
+                  <span>
+                    {{ comment.created_at | date:'short' }}
+                  </span>
+                </div>
+
+                <button
+                  type="button"
+                  class="comment-menu"
+                  aria-label="Comment options"
+                >
+                  <i class="bi bi-three-dots"></i>
+                </button>
+              </div>
+
+              <p>{{ comment.content }}</p>
+
+              <!-- <div class="comment-footer">
+                <button
+                  type="button"
+                  class="comment-like"
+                  [class.liked]="comment.liked_by_user"
+                  (click)="toggleCommentLike(comment)"
+                >
+                  <i
+                    class="bi"
+                    [ngClass]="
+                      comment.liked_by_user
+                        ? 'bi-heart-fill'
+                        : 'bi-heart'
+                    "
+                  ></i>
+
+                  {{ comment.likes }}
+                </button>
+
+                <button
+                  type="button"
+                  class="reply-button"
+                >
+                  Reply
+                </button>
+              </div> -->
+            </div>
+          </article>
+        } @empty {
+          <div class="empty-comments">
+            <i class="bi bi-chat-square-text"></i>
+
+            <h3>No comments yet</h3>
+
+            <p>
+              Be the first person to share your opinion.
+            </p>
+          </div>
+        }
+      </div>
+    </section>
+  </main>
+</div>

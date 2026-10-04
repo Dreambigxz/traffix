@@ -23,7 +23,7 @@ export class NewsListComponent {
 
 
 
-  @Input({ required: true }) articles!: any;
+  @Input({ required: true }) section!: any;
 
   @Output() viewMore = new EventEmitter<string>();
   @Output() articleSelected = new EventEmitter<any>();
@@ -41,6 +41,10 @@ export class NewsListComponent {
     ]);
 
 
+  }
+
+  openCategory(): void {
+    this.viewMore.emit(this.section.key);
   }
 
   formatCount(value: number): string {
