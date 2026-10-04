@@ -79,35 +79,35 @@ export class NewsCategoriesNavComponent {
       icon: 'bi-grid'
     },
 
-    {
-      key: 'latest',
-      label: 'Latest',
-      icon: 'bi-newspaper'
-    },
-
-    {
-      key: 'sports',
-      label: 'Sports',
-      icon: 'bi-dribbble'
-    },
-
-    {
-      key: 'technology',
-      label: 'Technology',
-      icon: 'bi-cpu-fill'
-    },
-
-    {
-      key: 'business',
-      label: 'Business',
-      icon: 'bi-bar-chart-fill'
-    },
-
-    {
-      key: 'entertainment',
-      label: 'Entertainment',
-      icon: 'bi-camera-reels-fill'
-    }
+    // {
+    //   key: 'latest',
+    //   label: 'Latest',
+    //   icon: 'bi-newspaper'
+    // },
+    //
+    // {
+    //   key: 'sports',
+    //   label: 'Sports',
+    //   icon: 'bi-dribbble'
+    // },
+    //
+    // {
+    //   key: 'technology',
+    //   label: 'Technology',
+    //   icon: 'bi-cpu-fill'
+    // },
+    //
+    // {
+    //   key: 'business',
+    //   label: 'Business',
+    //   icon: 'bi-bar-chart-fill'
+    // },
+    //
+    // {
+    //   key: 'entertainment',
+    //   label: 'Entertainment',
+    //   icon: 'bi-camera-reels-fill'
+    // }
   ];
 
 
@@ -181,6 +181,7 @@ export class NewsCategoriesNavComponent {
         ) {
 
           this.initializeNews();
+
         }
 
       });
@@ -196,15 +197,16 @@ export class NewsCategoriesNavComponent {
 
     try {
 
-      const res: any =
-        await this.fetchNews(
-          'articles/?page=1'
-        );
+      let incoming = this.quickNav.storeData.get("articles")
+      if (!incoming) {
+        const res: any =
+          await this.fetchNews(
+            'articles/?page=1'
+          );
+          incoming =
+          res?.main?.articles ?? []
 
-
-      const incoming =
-        res?.main?.articles ?? [];
-
+      }
 
       // Current visible page
       this.articles = [
@@ -218,9 +220,7 @@ export class NewsCategoriesNavComponent {
       ];
 
 
-      this.pagination =
-        res?.main?.pagination ??
-        null;
+      this.pagination = this.quickNav.storeData.get("pagination")
 
 
       // Build category tabs
@@ -268,7 +268,7 @@ export class NewsCategoriesNavComponent {
     ) {
 
       const key =
-        article?.category_key
+        article?.category
           ?.trim()
           ?.toLowerCase();
 
@@ -303,8 +303,8 @@ export class NewsCategoriesNavComponent {
           null,
 
         icon:
-          article.category_icon ||
-          'bi-newspaper'
+          this.getCategoryIcon(article.category)
+
       });
     }
   }
@@ -319,11 +319,7 @@ export class NewsCategoriesNavComponent {
   ): void {
 
     this.activeCategory =
-      category;
-
-    this.categoryChanged.emit(
-      category
-    );
+      category.trim().toLowerCase();
   }
 
 
@@ -354,7 +350,7 @@ export class NewsCategoriesNavComponent {
     return this.articles.filter(
       article =>
 
-        article?.category_key
+        article?.category
           ?.trim()
           ?.toLowerCase() ===
         category
@@ -562,4 +558,42 @@ export class NewsCategoriesNavComponent {
       'Sponsored earning not active at the moment'
     );
   }
+
+  getCategoryIcon(
+    category: string
+  ): string {
+
+    switch (
+      category?.trim().toLowerCase()
+    ) {
+
+      case 'sports':
+        return 'bi-trophy-fill';
+
+      case 'uk':
+        return 'bi-geo-alt-fill';
+
+      case 'latest':
+        return 'bi-clock-fill';
+
+      case 'politics':
+        return 'bi-bank';
+
+      case 'world':
+        return 'bi-globe2';
+
+      case 'education':
+        return 'bi-mortarboard-fill';
+
+      case 'technology':
+        return 'bi-cpu-fill';
+
+      case 'business':
+        return 'bi-briefcase-fill';
+
+      default:
+        return 'bi-newspaper';
+    }
+  }
+
 }

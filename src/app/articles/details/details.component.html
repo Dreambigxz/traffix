@@ -103,6 +103,7 @@
                   [src]="block.url || block.path"
                   [alt]="block.alt || article?.title"
                   loading="lazy"
+                  decoding="async"
                 />
 
               </div>
@@ -234,6 +235,8 @@
               <img
                 [src]="comment.user.avatar"
                 [alt]="comment.user.name"
+                loading="lazy"
+                decoding="async"
               />
             } @else {
               <div class="small-avatar">
@@ -337,6 +340,8 @@
                 <img
                   [src]="comment.user.avatar"
                   [alt]="comment.user.name"
+                  loading="lazy"
+                  decoding="async"
                 />
               } @else {
                 <div class="avatar-placeholder">

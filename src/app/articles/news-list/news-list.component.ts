@@ -22,7 +22,6 @@ import { Router } from '@angular/router';
 export class NewsListComponent {
 
 
-
   @Input({ required: true }) articles!: any;
 
   @Output() viewMore = new EventEmitter<string>();
