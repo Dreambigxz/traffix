@@ -43,7 +43,7 @@ export class CreatePlanComponent {
 
   ngOnInit(){
 
-    this.plans = this.quickNav.storeData.get("plans")
+    // this.plans = this.quickNav.storeData.get("plans")
 
     if (!this.quickNav.storeData.get("my_plans")) {
       this.quickNav.reqServerData.get("plans/")
@@ -51,21 +51,28 @@ export class CreatePlanComponent {
         this.loadData()
       })
     }else{
-      this.loadData()
+      this.loadData() 
     }
   }
 
   loadData(){
+
+    const plans = this.quickNav.storeData.get("plans")
+
     this.activePlanKeys = this.hasPlan.map((plan:any) => plan.plan_id);
     this.completedPlanKeys = this.quickNav.storeData.get('my_plans')?.completed?.map((plan:any) => plan.plan_id) || [];
 
-    if (this.quickNav.daysSinceJoined > 2){
-      this.plans[0].hide =  true
-      this.plans[0].change =  true
+
+    let total_days_joined = this.quickNav.daysSinceJoined
+    if (total_day_joined > 2){
+      plans[0].hide =  true
+      plans[0].change =  true
 
     }
 
-    this.plans = this.quickNav.storeData.get("plans")
+    console.log({total_days_joined});
+
+    this.plans = plans
 
 
     console.log({plan:this.plans});

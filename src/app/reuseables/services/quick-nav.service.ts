@@ -231,8 +231,6 @@ export class QuickNavService {
       diff / (1000 * 60 * 60 * 24)
     );
 
-    console.log({res});
-
     return res;
 
   }
