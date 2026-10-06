@@ -51,7 +51,7 @@ export class CreatePlanComponent {
         this.loadData()
       })
     }else{
-      this.loadData() 
+      this.loadData()
     }
   }
 
@@ -64,7 +64,7 @@ export class CreatePlanComponent {
 
 
     let total_days_joined = this.quickNav.daysSinceJoined
-    if (total_day_joined > 2){
+    if (total_days_joined > 2){
       plans[0].hide =  true
       plans[0].change =  true
 
