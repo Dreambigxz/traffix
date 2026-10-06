@@ -208,4 +208,33 @@ export class QuickNavService {
   goBack(){
     window.history.go(-1)
   }
+
+  get daysSinceJoined(): number {
+
+    const joinedAt = this.storeData.get("date_joined")
+
+    if (!joinedAt) {
+      return 0;
+    }
+
+    const joined =
+      new Date(joinedAt);
+
+    const today =
+      new Date();
+
+    const diff =
+      today.getTime() -
+      joined.getTime();
+
+    const res = Math.floor(
+      diff / (1000 * 60 * 60 * 24)
+    );
+
+    console.log({res});
+
+    return res;
+
+  }
+
 }

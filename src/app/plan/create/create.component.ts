@@ -59,6 +59,11 @@ export class CreatePlanComponent {
     this.plans = this.quickNav.storeData.get("plans")
     this.activePlanKeys = this.hasPlan.map((plan:any) => plan.plan_id);
     this.completedPlanKeys = this.quickNav.storeData.get('my_plans')?.completed?.map((plan:any) => plan.plan_id) || [];
+
+    if (this.quickNav.daysSinceJoined > 2){
+      this.plans[0].hide =  true
+      this.plans[0].change =  true
+    }
   }
 
 
