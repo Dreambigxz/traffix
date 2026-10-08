@@ -97,8 +97,9 @@ export class CreatePlanComponent {
   }
 
   isCompleted(plan: any): boolean {
+
     return this.completedPlanKeys.includes(
-      plan.key
+      plan.id
     );
   }
 

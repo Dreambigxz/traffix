@@ -277,5 +277,48 @@ export class DetailsComponent implements OnInit {
       .trim();
   }
 
+  async shareArticle(): Promise<void> {
+
+    if (!this.article) return;
+
+    const title = this.article.title;
+
+    const url = new URL(
+      `/article/${this.article.id}`,
+      window.location.origin
+    ).href;
+
+    const shareData: ShareData = {
+      title,
+      text: `📰 ${title}\n\nRead more on Traffix:`,
+      url
+    };
+
+    try {
+
+      // Native share menu (mobile and supported browsers)
+      if (navigator.share) {
+
+        await navigator.share(shareData);
+
+        return;
+      }
+
+      // Fallback: copy link
+      await navigator.clipboard.writeText(url);
+
+      alert('Article link copied successfully!');
+
+    } catch (error: any) {
+
+      // User cancelled sharing
+      if (error?.name === 'AbortError') {
+        return;
+      }
+
+      console.error('Sharing failed:', error);
+    }
+  }
+
 
 }

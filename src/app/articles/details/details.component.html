@@ -178,8 +178,8 @@
           class="bi"
           [ngClass]="
             article.liked_by_user
-              ? 'bi-heart-fill'
-              : 'bi-heart'
+              ? 'bi-hand-thumbs-up-fill'
+              : 'bi-hand-thumbs-up'
           "
         ></i>
 
@@ -187,7 +187,9 @@
           {{ article.liked_by_user ? 'Liked' : 'Like' }}
         </span>
 
-        <strong>{{ formatCount(article.likes) }}</strong>
+        <strong>
+          {{ formatCount(article.likes) }}
+        </strong>
       </button>
 
       <span
@@ -200,12 +202,13 @@
       </span>
 
       <button
-        type="button"
-        class="share-button"
-      >
-        <i class="bi bi-share"></i>
-        <span>Share</span>
-      </button>
+      type="button"
+      class="share-button"
+      (click)="shareArticle()"
+    >
+      <i class="bi bi-share"></i>
+      <span>Share</span>
+    </button>
     </section>
 
     <!-- Comment area -->

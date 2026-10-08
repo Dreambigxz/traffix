@@ -267,9 +267,9 @@
       type="button"
       class="empty-link"
       *ngIf="page === 'completed'"
-      (click)="page = 'active'"
+      (click)="this.quickNav.go('/task/history')"
     >
-      View running plans
+      View task history
       <span aria-hidden="true">→</span>
     </button>
   </div>
