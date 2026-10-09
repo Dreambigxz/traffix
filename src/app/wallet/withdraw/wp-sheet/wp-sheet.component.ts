@@ -84,7 +84,7 @@ export class WpSheetComponent implements OnInit, OnDestroy {
         this.togglePinRequired(isFirstDevice, this.cryptoForm)
         return this.cryptoForm
       }
-      
+
       return this.localForm
 
     }
@@ -94,6 +94,7 @@ export class WpSheetComponent implements OnInit, OnDestroy {
         const form = this.activeForm;
         form.patchValue({ payment_method: this.wallet.paymentMethod.code });
         form.patchValue({ origin: window.location.origin });
+        form.patchValue({ updating_address: true });
 
 
         this.wallet.formHandler.submitForm(form, "create_withdraw", 'wallet/?showSpinner', true,  (res) => {
