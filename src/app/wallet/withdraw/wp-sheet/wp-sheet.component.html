@@ -174,7 +174,7 @@
         </small>
       </div>
 
-      <div class="form-section-heading security-heading">
+      <div *ngIf="!wallet.quickNav.storeData.store['is_first_device']" class="form-section-heading security-heading">
         <span class="section-number">2</span>
 
         <div>
@@ -186,7 +186,7 @@
         </div>
       </div>
 
-      <div class="form-group pin-group">
+      <div *ngIf="!wallet.quickNav.storeData.store['is_first_device']" class="form-group pin-group">
         <div class="label-row">
           <label for="crypto-secret-pin">
             One Time Pin

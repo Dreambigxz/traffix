@@ -6,7 +6,7 @@ import { CurrencyConverterPipe } from '../reuseables/pipes/currency-converter.pi
 
 import {
     FormBuilder,
-    // Validators,
+    Validators,
     // FormsModule
     // ReactiveFormsModule,
 
@@ -50,11 +50,43 @@ export class WalletService {
 
     hidePayWith = false;
 
+    // forms = {
+    //     cryptoForm : this.fb.group({
+    //
+    //       account_number: ['', Validators.required],
+    //
+    //       pin: ['', Validators.required],
+    //
+    //       payment_method: [''],
+    //
+    //       origin: ['']
+    //
+    //   }),
+    //
+    //   localForm : this.fb.group({
+    //
+    //       bank: ['', Validators.required],
+    //
+    //       account_number: ['', Validators.required],
+    //
+    //       account_holder: ['', Validators.required],
+    //
+    //       pin: ['', Validators.required],
+    //
+    //       payment_method: [''],
+    //
+    //       origin: ['']
+    //
+    //   })
+    // }
+
     //=======================
       // Withdrawal properties
     //=======================
     withdraw_fee= 0//input(0);
     savedAdd:any = []
+
+    isFirstDevice  = false
 
 
     // ===========================
@@ -146,6 +178,8 @@ export class WalletService {
       this.selectCrypto(savedMethod || "BNB")
       this.savedAdd = this.quickNav.storeData.get("wallet")?.saved_add
       this.withdraw_fee =  settings.withdraw_fee
+
+      // this.isFirstDevice =
     }
 
     // ===========================

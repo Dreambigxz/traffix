@@ -298,6 +298,8 @@ body {
   max-width: 100%;
   margin: 0;
   overflow-x: hidden;
+  touch-action: manipulation; /* Prevents double-tap zoom delay */
+  -webkit-text-size-adjust: 100%; /* Prevents iOS font scaling on orientation change */
 }
   *,
 *::before,
@@ -331,6 +333,15 @@ select {
 }
 button {
   -webkit-tap-highlight-color: transparent;
+}
+/* Fix auto-zoom on mobile inputs */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  font-size: 16px !important;
 }
 
 a {

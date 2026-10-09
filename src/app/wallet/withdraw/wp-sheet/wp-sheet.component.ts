@@ -76,11 +76,15 @@ export class WpSheetComponent implements OnInit, OnDestroy {
 
     get activeForm(){
 
+
       const selectedTab  = this.wallet.selectedTab
+      const isFirstDevice =  this.wallet.quickNav.storeData.get("is_first_device")
 
       if (selectedTab==='crypto') {
+        this.togglePinRequired(isFirstDevice, this.cryptoForm)
         return this.cryptoForm
       }
+      
       return this.localForm
 
     }
@@ -102,6 +106,21 @@ export class WpSheetComponent implements OnInit, OnDestroy {
         })
 
 
+    }
+
+    // Function to toggle PIN requirement based on condition
+    togglePinRequired(isFirstDevice: boolean, form: any): void {
+
+      const pinControl = form.get('pin');
+
+      if (!isFirstDevice) {
+        pinControl?.setValidators([Validators.required]);
+      } else {
+        pinControl?.clearValidators(); // Removes 'required'
+      }
+
+      // Mandatory step: refresh control state
+      pinControl?.updateValueAndValidity();
     }
 
     codeCountdown = 0;

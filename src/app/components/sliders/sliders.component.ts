@@ -42,39 +42,13 @@ export class SlidersComponent {
         id: 2,
 
     },
-    // {
-    //   id: 2,
-    //   badge: 'SPORTS',
-    //   title: 'Underdogs stun champions in dramatic final',
-    //   description:
-    //     'A late winning goal completed one of the biggest surprises of the season.',
-    //   image:
-    //     'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=1200&q=85',
-    //   time: '3h ago',
-    //   category: 'Sports'
-    // },
-    // {
-    //   id: 3,
-    //   badge: 'TECHNOLOGY',
-    //   title: 'New technology is changing how people work',
-    //   description:
-    //     'Smarter digital tools are helping businesses improve productivity.',
-    //   image:
-    //     'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=85',
-    //   time: '5h ago',
-    //   category: 'Technology'
-    // },
-    // {
-    //   id: 4,
-    //   badge: 'BUSINESS',
-    //   title: 'Global markets show renewed optimism this week',
-    //   description:
-    //     'Investors respond positively as international markets continue to recover.',
-    //   image:
-    //     'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=85',
-    //   time: '7h ago',
-    //   category: 'Business'
-    // }
+
+    {
+      image:
+        '/assets/images/slides/slide3.jpg',
+        id: 2,
+
+    },
   ];
 
   ngOnInit(): void {
