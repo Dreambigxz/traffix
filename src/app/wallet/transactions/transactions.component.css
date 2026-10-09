@@ -798,3 +798,171 @@
     padding: 0;
   }
 }
+
+
+/* ==========================================
+   TRANSACTION PAGINATION
+========================================== */
+
+.transaction-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 18px;
+  padding: 14px 16px;
+  background: #ffffff;
+  border: 1px solid #edf0f3;
+  border-radius: 14px;
+  box-sizing: border-box;
+}
+
+/* Pagination buttons */
+
+.transaction-pagination .pagination-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 100px;
+  min-height: 40px;
+  padding: 10px 15px;
+  border: 1px solid #e8eaee;
+  border-radius: 9px;
+  background: #ffffff;
+  color: #343b47;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.transaction-pagination .pagination-btn i {
+  font-size: 12px;
+}
+
+.transaction-pagination .pagination-btn:hover:not(:disabled) {
+  background: #fff1f1;
+  border-color: #ffd5d6;
+  color: #e91e24;
+}
+
+/* Next button */
+
+.transaction-pagination .pagination-next {
+  background: #e91e24;
+  border-color: #e91e24;
+  color: #ffffff;
+}
+
+.transaction-pagination .pagination-next:hover:not(:disabled) {
+  background: #cc191f;
+  border-color: #cc191f;
+  color: #ffffff;
+}
+
+/* Disabled buttons */
+
+.transaction-pagination .pagination-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Current page information */
+
+.transaction-pagination .pagination-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: #858c98;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.transaction-pagination .pagination-info strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  background: #fff0f0;
+  border-radius: 7px;
+  color: #e91e24;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Loading spinner */
+
+.transaction-pagination .loader {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: transaction-page-spin 0.7s linear infinite;
+}
+
+@keyframes transaction-page-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+========================================== */
+
+@media (max-width: 600px) {
+  .transaction-pagination {
+    gap: 8px;
+    margin-top: 12px;
+    padding: 11px;
+    border-radius: 12px;
+  }
+
+  .transaction-pagination .pagination-btn {
+    min-width: 0;
+    min-height: 36px;
+    padding: 9px 11px;
+    gap: 5px;
+    font-size: 11px;
+    border-radius: 8px;
+  }
+
+  .transaction-pagination .pagination-info {
+    gap: 4px;
+    font-size: 11px;
+  }
+
+  .transaction-pagination .pagination-info strong {
+    min-width: 25px;
+    height: 25px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 360px) {
+  .transaction-pagination {
+    padding: 9px 7px;
+    gap: 5px;
+  }
+
+  .transaction-pagination .pagination-btn {
+    padding: 8px;
+    font-size: 10px;
+  }
+
+  .transaction-pagination .pagination-info {
+    font-size: 10px;
+  }
+}

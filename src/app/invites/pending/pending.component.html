@@ -1,79 +1,290 @@
 <app-header
- [wallet]="quickNav.storeData.store['wallet']"
- />
+  [wallet]="quickNav.storeData.store['wallet']"
+/>
+
 <div class="pending-view">
 
+  <!-- =====================================
+       SUMMARY
+  ====================================== -->
+
+  <div class="pending-summary">
+
+    <div class="summary-item">
+      <span>Total Pending</span>
+      <strong>
+        {{ summary.total_pending }}
+      </strong>
+    </div>
+
+    <div class="summary-item">
+      <span>Level 1</span>
+      <strong>
+        {{ summary.generation_1 }}
+      </strong>
+    </div>
+
+    <div class="summary-item">
+      <span>Level 2</span>
+      <strong>
+        {{ summary.generation_2 }}
+      </strong>
+    </div>
+
+    <div class="summary-item">
+      <span>Level 3</span>
+      <strong>
+        {{ summary.generation_3 }}
+      </strong>
+    </div>
+
+  </div>
+
+
+  <!-- =====================================
+       TABLE
+  ====================================== -->
+
   <section class="pending-table-card">
-    <!-- <header class="table-header">
+
+    <header class="table-header">
+
       <div>
         <span>Referral network</span>
         <h2>Pending Subordinates</h2>
       </div>
 
-      <strong>{{ pending.length }}</strong>
-    </header> -->
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="loading"
+        (click)="refreshPending()"
+        aria-label="Refresh pending referrals"
+      >
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+
+    </header>
 
 
+    @if (loading && !pending.length) {
 
-    @if (pending.length) {
+      <div class="empty-state">
+        <span class="loading-spinner"></span>
+        <p>Loading referrals...</p>
+      </div>
+
+    } @else if (pending.length) {
+
       <div class="table-container">
+
         <table>
+
           <thead>
             <tr>
               <th>User</th>
+              <th>Level</th>
               <th>Date joined</th>
             </tr>
           </thead>
 
           <tbody>
-            @for (item of pending; track item.id) {
+
+            @for (
+              item of pending;
+              track item.id
+            ) {
+
               <tr>
+
+                <!-- USER -->
+
                 <td>
                   <div class="user-cell">
+
                     <span class="user-avatar">
                       {{
-                        item.user
+                        item.username
                           ?.charAt(0)
                           ?.toUpperCase()
                       }}
                     </span>
 
                     <div>
-                      <strong>{{ item.user }}</strong>
-                      <small>Pending activation</small>
+
+                      <strong>
+                        {{ item.username }}
+                      </strong>
+
+                      <small>
+                        Referred by
+                        {{ item.referred_by_username }}
+                      </small>
+
                     </div>
+
                   </div>
                 </td>
+
+
+                <!-- GENERATION -->
+
+                <td>
+                  <span class="generation-badge">
+                    L{{ item.generation }}
+                  </span>
+                </td>
+
+
+                <!-- DATE JOINED -->
 
                 <td>
                   <div class="date-cell">
-                    <strong>
-                      {{
-                        item.created_at
-                          | date:'MMM d, y'
-                      }}
-                    </strong>
 
-                    <small>
-                      {{
-                        item.created_at
-                          | date:'h:mm a'
-                      }}
-                    </small>
+                    @if (
+                      item.date_joined ||
+                      item.created_at
+                    ) {
+
+                      <strong>
+                        {{
+                          (item.date_joined || item.created_at)
+                            | date:'MMM d, y'
+                        }}
+                      </strong>
+
+                      <small>
+                        {{
+                          (item.date_joined || item.created_at)
+                            | date:'h:mm a'
+                        }}
+                      </small>
+
+                    } @else {
+
+                      <small>—</small>
+
+                    }
+
                   </div>
                 </td>
+
               </tr>
+
             }
+
           </tbody>
+
         </table>
+
       </div>
+
     } @else {
+
       <div class="empty-state">
+
         <i class="bi bi-person-check"></i>
+
         <h3>No pending users</h3>
-        <p>Your pending referrals will appear here.</p>
+
+        <p>
+          Your pending referrals will appear here.
+        </p>
+
       </div>
+
     }
+
   </section>
+
+
+  <!-- =====================================
+       PAGINATION
+  ====================================== -->
+
+  @if (
+    pagination &&
+    pagination.total_pages > 1
+  ) {
+
+    <div class="pagination-container">
+
+      <!-- PREVIOUS -->
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="
+          !pagination.has_previous ||
+          loading
+        "
+        (click)="loadPage('previous')"
+      >
+
+        @if (
+          loading &&
+          loadingDirection === 'previous'
+        ) {
+
+          <span class="loading-spinner"></span>
+
+        } @else {
+
+          <i class="bi bi-chevron-left"></i>
+          <span>Previous</span>
+
+        }
+
+      </button>
+
+
+      <!-- PAGE INFO -->
+
+      <div class="page-info">
+
+        <span>Page</span>
+
+        <strong>
+          {{ pagination.current_page }}
+        </strong>
+
+        <span>
+          of {{ pagination.total_pages }}
+        </span>
+
+      </div>
+
+
+      <!-- NEXT -->
+
+      <button
+        type="button"
+        class="pagination-btn pagination-btn--next"
+        [disabled]="
+          !pagination.has_next ||
+          loading
+        "
+        (click)="loadPage('next')"
+      >
+
+        @if (
+          loading &&
+          loadingDirection === 'next'
+        ) {
+
+          <span class="loading-spinner"></span>
+
+        } @else {
+
+          <span>Next</span>
+          <i class="bi bi-chevron-right"></i>
+
+        }
+
+      </button>
+
+    </div>
+
+  }
 
 </div>

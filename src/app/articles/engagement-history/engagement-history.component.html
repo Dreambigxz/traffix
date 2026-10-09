@@ -1,0 +1,339 @@
+<app-header
+  [wallet]="quickNav.storeData.store['wallet']"
+/>
+
+<div class="earning-view">
+
+  <!-- SUMMARY -->
+
+  <section class="earning-summary">
+
+    <div class="summary-card summary-card--primary">
+      <div class="summary-icon">
+        <i class="bi bi-wallet2"></i>
+      </div>
+
+      <span>Total Earned</span>
+
+      <strong>
+        ${{ summary.total_earned | number:'1.2-2' }}
+      </strong>
+
+      <small>Successfully credited</small>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon">
+        <i class="bi bi-hourglass-split"></i>
+      </div>
+
+      <span>Pending Earnings</span>
+
+      <strong>
+        ${{ summary.total_pending | number:'1.2-2' }}
+      </strong>
+
+      <small>Awaiting credit</small>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon">
+        <i class="bi bi-check-circle"></i>
+      </div>
+
+      <span>Successful Days</span>
+
+      <strong>
+        {{ summary.successful_days }}
+      </strong>
+
+      <small>Completed earning days</small>
+    </div>
+
+    <div class="summary-card">
+      <div class="summary-icon">
+        <i class="bi bi-chat-square-text"></i>
+      </div>
+
+      <span>Total Engagements</span>
+
+      <strong>
+        {{ summary.total_comments + summary.total_likes }}
+      </strong>
+
+      <small>
+        {{ summary.total_likes }} likes ·
+        {{ summary.total_comments }} comments
+      </small>
+    </div>
+
+  </section>
+
+  <!-- HISTORY CARD -->
+
+  <section class="earning-table-card">
+
+    <header class="earning-table-header">
+
+      <div>
+        <span class="eyebrow">
+          Engagement rewards
+        </span>
+
+        <h2>Earning History</h2>
+
+        <p>
+          Track your daily engagement rewards
+          and payment status.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="refresh-button"
+        [disabled]="loading"
+        (click)="refreshEarnings()"
+        aria-label="Refresh earning history"
+      >
+        <i class="bi bi-arrow-clockwise"></i>
+      </button>
+
+    </header>
+
+    <!-- FILTER TABS -->
+
+    <!-- <nav class="earning-tabs">
+
+      <button
+        type="button"
+        [class.active]="activeStatus === 'all'"
+        [disabled]="loading"
+        (click)="selectStatus('all')"
+      >
+        All
+        <span>{{ summary.total_records }}</span>
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeStatus === 'success'"
+        [disabled]="loading"
+        (click)="selectStatus('success')"
+      >
+        Credited
+        <span>{{ summary.successful_days }}</span>
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeStatus === 'pending'"
+        [disabled]="loading"
+        (click)="selectStatus('pending')"
+      >
+        Pending
+        <span>{{ summary.pending_days }}</span>
+      </button>
+
+      <button
+        type="button"
+        [class.active]="activeStatus === 'failed'"
+        [disabled]="loading"
+        (click)="selectStatus('failed')"
+      >
+        Failed
+        <span>{{ summary.failed_days }}</span>
+      </button>
+
+    </nav> -->
+
+    <!-- LOADING -->
+
+    @if (loading && !earnings.length) {
+
+      <div class="earning-empty-state">
+        <span class="loading-spinner"></span>
+        <p>Loading earning history...</p>
+      </div>
+
+    } @else if (earnings.length) {
+
+      <!-- TABLE -->
+
+      <div class="earning-table-container">
+
+        <table>
+
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Engagement</th>
+              <th>Reward</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+
+          <tbody>
+
+            @for (item of earnings; track item.id) {
+
+              <tr>
+
+                <!-- DATE -->
+
+                <td>
+                  <div class="date-cell">
+                    <strong>
+                      {{ item.date | date:'MMM d, y' }}
+                    </strong>
+
+                    <small>
+                      Engagement reward
+                    </small>
+                  </div>
+                </td>
+
+                <!-- ENGAGEMENT -->
+
+                <td>
+                  <div class="engagement-cell">
+
+                    <span>
+                      <i class="bi bi-hand-thumbs-up"></i>
+                      {{ item.likes }}
+                    </span>
+
+                    <span>
+                      <i class="bi bi-chat-dots"></i>
+                      {{ item.comments }}
+                    </span>
+
+                  </div>
+                </td>
+
+                <!-- REWARD -->
+
+                <td>
+                  <strong class="earning-amount">
+                    +${{ item.amount | number:'1.2-2' }}
+                  </strong>
+                </td>
+
+                <!-- STATUS -->
+
+                <td>
+                  <span
+                    class="earning-status"
+                    [ngClass]="'status-' + item.status"
+                  >
+                    <i
+                      class="bi"
+                      [ngClass]="{
+                        'bi-check-circle-fill':
+                          item.status === 'success',
+
+                        'bi-clock-fill':
+                          item.status === 'pending',
+
+                        'bi-x-circle-fill':
+                          item.status === 'failed'
+                      }"
+                    ></i>
+
+                    {{ getStatusLabel(item.status) }}
+                  </span>
+                </td>
+
+              </tr>
+
+            }
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    } @else if (initialized) {
+
+      <!-- EMPTY STATE -->
+
+      <div class="earning-empty-state">
+
+        <div class="empty-icon">
+          <i class="bi bi-wallet2"></i>
+        </div>
+
+        <h3>No earning history</h3>
+
+        <p>
+          Your daily engagement rewards
+          will appear here.
+        </p>
+
+      </div>
+
+    }
+
+  </section>
+
+  <!-- PAGINATION -->
+
+  @if (pagination && pagination.total_pages > 1) {
+
+    <div class="earning-pagination">
+
+      <button
+        type="button"
+        class="pagination-btn"
+        [disabled]="
+          !pagination.has_previous || loading
+        "
+        (click)="loadPage('previous')"
+      >
+        @if (
+          loading &&
+          loadingDirection === 'previous'
+        ) {
+          <span class="loading-spinner"></span>
+        } @else {
+          <i class="bi bi-chevron-left"></i>
+          Previous
+        }
+      </button>
+
+      <div class="page-info">
+        <span>Page</span>
+
+        <strong>
+          {{ pagination.current_page }}
+        </strong>
+
+        <span>
+          of {{ pagination.total_pages }}
+        </span>
+      </div>
+
+      <button
+        type="button"
+        class="pagination-btn pagination-btn--next"
+        [disabled]="
+          !pagination.has_next || loading
+        "
+        (click)="loadPage('next')"
+      >
+        @if (
+          loading &&
+          loadingDirection === 'next'
+        ) {
+          <span class="loading-spinner"></span>
+        } @else {
+          Next
+          <i class="bi bi-chevron-right"></i>
+        }
+      </button>
+
+    </div>
+
+  }
+
+</div>

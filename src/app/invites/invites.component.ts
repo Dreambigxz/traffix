@@ -32,8 +32,6 @@ interface GenerationData {
   last_updated?: string | null;
 }
 
-
-
 @Component({
   selector: 'app-invite',
   imports: [
@@ -69,6 +67,7 @@ export class InvitesComponent {
       .subscribe((res)=>{
           this.walletData=this.quickNav.storeData.get('wallet');
           this.referralData.set(this.quickNav.storeData.get("refDir"))
+
         }
       )}
   }

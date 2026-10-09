@@ -1,9 +1,16 @@
+
 <!-- <app-header></app-header> -->
+
 <app-spinner></app-spinner>
 
-
 <main class="transactions-page">
+
+  <!-- ==========================================
+       PAGE HEADER
+  =========================================== -->
+
   <header class="transactions-header">
+
     <button
       class="header-button"
       type="button"
@@ -21,19 +28,27 @@
     <button
       class="header-button filter-button"
       type="button"
-      aria-label="Transaction filters"
+      aria-label="Refresh transactions"
+      [disabled]="loading()"
+      (click)="refreshTransactions()"
     >
       <i
-        class="bi bi-funnel"
+        class="bi bi-arrow-clockwise"
         aria-hidden="true"
       ></i>
     </button>
+
   </header>
 
+
   <div class="transactions-container">
-    <!-- Summary -->
+
+    <!-- ==========================================
+         ACTIVITY SUMMARY
+    =========================================== -->
 
     <section class="activity-card">
+
       <span class="activity-label">
         Total Activity
       </span>
@@ -46,7 +61,11 @@
       </strong>
 
       <div class="activity-breakdown">
+
+        <!-- DEPOSITS -->
+
         <div>
+
           <span class="activity-icon deposit">
             <i
               class="bi bi-arrow-down-left"
@@ -55,18 +74,18 @@
           </span>
 
           <div>
+
             <small>Deposited</small>
 
             <strong>
               {{
                 totalDeposited()
-                  | currency:
-                    'USD':
-                    'symbol':
-                    '1.2-2'
+                  | currency:'USD':'symbol':'1.2-2'
               }}
             </strong>
+
           </div>
+
         </div>
 
         <span
@@ -74,7 +93,10 @@
           aria-hidden="true"
         ></span>
 
+        <!-- WITHDRAWALS -->
+
         <div>
+
           <span class="activity-icon withdraw">
             <i
               class="bi bi-arrow-up-right"
@@ -83,33 +105,38 @@
           </span>
 
           <div>
+
             <small>Withdrawn</small>
 
             <strong>
               {{
                 totalWithdrawn()
-                  | currency:
-                    'USD':
-                    'symbol':
-                    '1.2-2'
+                  | currency:'USD':'symbol':'1.2-2'
               }}
             </strong>
+
           </div>
+
         </div>
+
       </div>
+
     </section>
 
-    <!-- Type filter -->
+
+    <!-- ==========================================
+         TRANSACTION TYPE FILTER
+    =========================================== -->
 
     <nav
       class="type-filter"
       aria-label="Transaction type"
     >
+
       <button
         type="button"
-        [class.active]="
-          selectedType() === 'all'
-        "
+        [class.active]="selectedType() === 'all'"
+        [disabled]="loading()"
         (click)="setTypeFilter('all')"
       >
         All
@@ -117,9 +144,8 @@
 
       <button
         type="button"
-        [class.active]="
-          selectedType() === 'deposit'
-        "
+        [class.active]="selectedType() === 'deposit'"
+        [disabled]="loading()"
         (click)="setTypeFilter('deposit')"
       >
         Deposits
@@ -127,26 +153,28 @@
 
       <button
         type="button"
-        [class.active]="
-          selectedType() === 'withdraw'
-        "
+        [class.active]="selectedType() === 'withdraw'"
+        [disabled]="loading()"
         (click)="setTypeFilter('withdraw')"
       >
         Withdrawals
       </button>
+
     </nav>
 
-    <!-- Asset filter -->
+
+    <!-- ==========================================
+         ASSET FILTER
+    =========================================== -->
 
     <nav
       class="asset-filter"
-      aria-label="Cryptocurrency"
+      aria-label="Transaction asset"
     >
+
       <button
         type="button"
-        [class.active]="
-          selectedAsset() === 'all'
-        "
+        [class.active]="selectedAsset() === 'all'"
         (click)="setAssetFilter('all')"
       >
         All assets
@@ -156,125 +184,148 @@
         asset of ['USD', 'BNB', 'TRX'];
         track asset
       ) {
+
         <button
           type="button"
-          [class.active]="
-            selectedAsset() === asset
-          "
-          (click)="
-            setAssetFilter($any(asset))
-          "
+          [class.active]="selectedAsset() === asset"
+          (click)="setAssetFilter(asset)"
         >
+
           <span
             class="filter-asset-icon"
-            [style.--asset-color]="
-              assetColor(asset)
-            "
+            [style.--asset-color]="assetColor(asset)"
           >
             {{ assetIcon(asset) }}
           </span>
 
           {{ asset }}
+
         </button>
+
       }
+
     </nav>
 
-    <!-- Transaction list -->
+
+    <!-- ==========================================
+         TRANSACTION HISTORY
+    =========================================== -->
 
     <section class="transaction-section">
+
       <header class="section-header">
+
         <div>
           <span>Wallet activity</span>
           <h2>Recent Transactions</h2>
         </div>
 
         <small>
-          {{ filteredTransactions().length }}
-          results
+          {{ pagination()?.total ?? 0 }} results
         </small>
+
       </header>
 
+
+      <!-- ========================================
+           LOADING STATE
+      ========================================= -->
+
       @if (loading()) {
+
         <div class="transaction-loading">
+
           <span class="loader"></span>
-          <p>Loading transactions...</p>
+
+          <p>
+            Loading transactions...
+          </p>
+
         </div>
-      } @else if (
-        filteredTransactions().length
-      ) {
+
+      }
+
+      <!-- ========================================
+           TRANSACTION LIST
+      ========================================= -->
+
+      @else if (filteredTransactions().length) {
+
         <div class="transaction-list">
+
           @for (
-            transaction of
-              filteredTransactions();
+            transaction of filteredTransactions();
             track transaction.id
           ) {
+
             <button
               class="transaction-item"
               type="button"
-              (click)="
-                openTransaction(transaction)
-              "
+              (click)="openTransaction(transaction)"
             >
+
+              <!-- ASSET ICON -->
+
               <span
                 class="transaction-asset-icon"
                 [style.--asset-color]="
-                  assetColor(
-                    transaction.method
-                  )
+                  assetColor(transaction.method)
                 "
               >
-                {{
-                  assetIcon(
-                    transaction.method
-                  )
-                }}
+                {{ assetIcon(transaction.method) }}
               </span>
 
+
+              <!-- TRANSACTION INFORMATION -->
+
               <span class="transaction-main">
+
                 <strong>
-                  {{
-                    transaction.type | titlecase
-                  }}
+                  {{ transaction.type_display || (transaction.type | titlecase) }}
                 </strong>
 
                 <small>
-                  {{
-                    transaction.extraField
-                      .network || 'Network'
-                  }}
+
+                  {{ transaction.method || 'Wallet' }}
+
                   <span>•</span>
+
                   {{
                     shortHash(
-                      transaction.transactionID
+                      transaction.txref
                     )
                   }}
+
                 </small>
 
                 <small>
                   {{
-                    transaction.timestamp
-                      | date:
-                        'MMM d, y · h:mm a'
+                    transaction.created_at
+                      | date:'MMM d, y · h:mm a'
                   }}
                 </small>
+
               </span>
 
+
+              <!-- AMOUNT AND STATUS -->
+
               <span class="transaction-result">
+
                 <strong
-                  [class.deposit]="transaction.type.includes('deposit')"
-                  [class.withdraw]="
-                    transaction.type ===
-                    'withdraw'
-                  "
+                  [class.deposit]="transaction.symbol === 'credit'"
+                  [class.withdraw]="transaction.symbol === 'debit'"
                 >
+
                   {{
-                    transaction.type.includes('deposit')
+                    transaction.symbol === 'credit'
                       ? '+'
                       : '-'
                   }}${{
                     transaction.amount
                       | number:'1.2-2'
                   }}
+
                 </strong>
 
                 <small
@@ -284,21 +335,33 @@
                     statusClass(transaction)
                   "
                 >
-                  {{
-                    displayStatus(transaction)
-                  }}
+                  {{ displayStatus(transaction) }}
                 </small>
+
               </span>
+
 
               <i
                 class="bi bi-chevron-right"
                 aria-hidden="true"
               ></i>
+
             </button>
+
           }
+
         </div>
-      } @else {
+
+      }
+
+      <!-- ========================================
+           EMPTY STATE
+      ========================================= -->
+
+      @else {
+
         <div class="empty-transactions">
+
           <span>
             <i
               class="bi bi-receipt"
@@ -309,23 +372,131 @@
           <h3>No transactions found</h3>
 
           <p>
-            Try changing the selected transaction
-            or asset filter.
+            @if (selectedAsset() !== 'all') {
+              No matching transactions on this page.
+              Try selecting another asset.
+            } @else {
+              Your transaction history will appear here
+              once you make a transaction.
+            }
           </p>
+
         </div>
+
       }
+
     </section>
+
+
+    <!-- ==========================================
+         CACHED PAGINATION
+    =========================================== -->
+
+    @if (pagination(); as page) {
+
+      @if (page.total_pages > 1) {
+
+        <div class="transaction-pagination">
+
+          <!-- PREVIOUS -->
+
+          <button
+            type="button"
+            class="pagination-btn"
+            [disabled]="
+              !page.has_previous ||
+              loading()
+            "
+            (click)="loadPage('previous')"
+          >
+
+            @if (
+              loading() &&
+              loadingDirection() === 'previous'
+            ) {
+
+              <span class="loader"></span>
+
+            } @else {
+
+              <i class="bi bi-chevron-left"></i>
+
+              Previous
+
+            }
+
+          </button>
+
+
+          <!-- PAGE INFORMATION -->
+
+          <div class="pagination-info">
+
+            <span>Page</span>
+
+            <strong>
+              {{ page.current_page }}
+            </strong>
+
+            <span>
+              of {{ page.total_pages }}
+            </span>
+
+          </div>
+
+
+          <!-- NEXT -->
+
+          <button
+            type="button"
+            class="pagination-btn pagination-next"
+            [disabled]="
+              !page.has_next ||
+              loading()
+            "
+            (click)="loadPage('next')"
+          >
+
+            @if (
+              loading() &&
+              loadingDirection() === 'next'
+            ) {
+
+              <span class="loader"></span>
+
+            } @else {
+
+              Next
+
+              <i class="bi bi-chevron-right"></i>
+
+            }
+
+          </button>
+
+        </div>
+
+      }
+
+    }
+
   </div>
+
 </main>
 
-<!-- Transaction detail -->
+
+<!-- ==========================================
+     TRANSACTION DETAILS MODAL
+=========================================== -->
 
 @if (selectedTransaction(); as transaction) {
+
   <div
     class="detail-backdrop"
     role="presentation"
     (click)="closeTransaction()"
   >
+
     <section
       class="transaction-detail"
       role="dialog"
@@ -333,19 +504,21 @@
       aria-labelledby="transaction-detail-title"
       (click)="$event.stopPropagation()"
     >
+
+      <!-- MODAL HEADER -->
+
       <header>
+
         <div>
-          <small>Transaction details</small>
+
+          <small>
+            Transaction details
+          </small>
 
           <h2 id="transaction-detail-title">
-            {{ transaction.method }}
-
-            {{
-              transaction.type === 'deposit'
-                ? 'Deposit'
-                : 'Withdrawal'
-            }}
+            {{ transaction.type_display || (transaction.type | titlecase) }}
           </h2>
+
         </div>
 
         <button
@@ -355,9 +528,14 @@
         >
           <i class="bi bi-x-lg"></i>
         </button>
+
       </header>
 
+
+      <!-- TRANSACTION STATUS -->
+
       <div class="detail-status">
+
         <span
           class="transaction-asset-icon"
           [style.--asset-color]="
@@ -368,14 +546,16 @@
         </span>
 
         <strong>
+
           {{
-            transaction.type === 'deposit'
+            transaction.symbol === 'credit'
               ? '+'
               : '-'
           }}${{
             transaction.amount
               | number:'1.2-2'
           }}
+
         </strong>
 
         <span
@@ -387,59 +567,192 @@
         >
           {{ displayStatus(transaction) }}
         </span>
+
       </div>
 
+
+      <!-- TRANSACTION DETAILS -->
+
       <div class="detail-list">
-        <div>
-          <span>Transaction reference</span>
-          <strong>#{{ transaction.txref }}</strong>
-        </div>
+
+        <!-- REFERENCE -->
 
         <div>
-          <span>Session ID</span>
+
+          <span>
+            Transaction reference
+          </span>
+
           <strong>
-            {{ transaction.sessionID }}
+            #{{ transaction.txref || 'N/A' }}
           </strong>
+
         </div>
 
+
+        <!-- TYPE -->
+
         <div>
-          <span>Network</span>
+
+          <span>
+            Transaction type
+          </span>
+
           <strong>
+            {{ transaction.type_display || (transaction.type | titlecase) }}
+          </strong>
+
+        </div>
+
+
+        <!-- PAYMENT METHOD -->
+
+        <div>
+
+          <span>
+            Payment method
+          </span>
+
+          <strong>
+            {{ transaction.method || 'Wallet' }}
+          </strong>
+
+        </div>
+
+
+        <!-- CURRENCY -->
+
+        <div>
+
+          <span>
+            Currency
+          </span>
+
+          <strong>
+            {{ transaction.currency || 'USD' }}
+          </strong>
+
+        </div>
+
+
+        <!-- AMOUNT -->
+
+        <div>
+
+          <span>
+            Transaction amount
+          </span>
+
+          <strong>
+            {{ transaction.currency || 'USD' }}
             {{
-              transaction.extraField.network ||
-              'Not provided'
+              transaction.amount
+                | number:'1.2-2'
             }}
           </strong>
+
         </div>
 
+
+        <!-- PROCESSING FEE -->
+
         <div>
-          <span>Processing fee</span>
+
+          <span>
+            Processing fee
+          </span>
+
           <strong>
-            ${{
+            {{ transaction.currency || 'USD' }}
+            {{
               transaction.processFee
                 | number:'1.2-2'
             }}
           </strong>
+
         </div>
 
+
+        <!-- RECEIVED AMOUNT -->
+
+        @if (transaction.type === 'withdraw') {
+
+          <div>
+
+            <span>
+              Amount after fee
+            </span>
+
+            <strong>
+              {{ transaction.currency || 'USD' }}
+              {{
+                transaction.receive_amount
+                  | number:'1.2-2'
+              }}
+            </strong>
+
+          </div>
+
+        }
+
+
+        <!-- STATUS -->
+
         <div>
-          <span>Date</span>
+
+          <span>
+            Status
+          </span>
+
+          <strong>
+            {{
+              transaction.status_display ||
+              displayStatus(transaction)
+            }}
+          </strong>
+
+        </div>
+
+
+        <!-- CREATED AT -->
+
+        <div>
+
+          <span>
+            Created at
+          </span>
+
+          <strong>
+            {{
+              transaction.created_at
+                | date:'MMM d, y · h:mm a'
+            }}
+          </strong>
+
+        </div>
+
+
+        <!-- LAST UPDATED -->
+
+        <div>
+
+          <span>
+            Last updated
+          </span>
+
           <strong>
             {{
               transaction.timestamp
-                | date:
-                  'MMM d, y · h:mm a'
+                | date:'MMM d, y · h:mm a'
             }}
           </strong>
+
         </div>
 
-        <div class="hash-row">
-          <span>Transaction hash</span>
-          <strong>
-            {{ transaction.transactionID }}
-          </strong>
-        </div>
       </div>
+
+
+      <!-- CLOSE BUTTON -->
 
       <button
         class="detail-close-button"
@@ -448,6 +761,9 @@
       >
         Done
       </button>
+
     </section>
+
   </div>
+
 }

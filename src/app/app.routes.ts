@@ -26,6 +26,7 @@ import { AgentManagementComponent } from "./admin/agent-management/agent-managem
 import {PaymentConfirmationComponent} from './admin/payment-confirmation/payment-confirmation.component'
 import { NotificationsComponent } from "./notifications/notifications.component";
 
+import { EngagementHistoryComponent } from "./articles/engagement-history/engagement-history.component";
 export const routes: Routes = [
 
   // auth
@@ -45,11 +46,19 @@ export const routes: Routes = [
 
   },
 
-  // mews Details
+  // news Details
   {
     path: 'article/:id',
       component: DetailsComponent,
       title:"Article details",
+      canActivate: [authGuard]
+  },
+
+  // engagement history
+  {
+    path: 'engagement/history',
+      component:EngagementHistoryComponent,
+      title:"Engagement History",
       canActivate: [authGuard]
   },
 
@@ -124,13 +133,7 @@ export const routes: Routes = [
     canActivate: [authGuard]
 
   },
-  // {
-  //   path:"invites/rewards",
-  //   component:  RewardComponent,
-  //   title: "Invite Rewards",
-  //   canActivate: [authGuard]
-  //
-  // },
+
 
   {
     path:"account",

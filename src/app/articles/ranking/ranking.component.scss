@@ -710,3 +710,38 @@
     }
   }
 }
+
+.earning-history-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 15px 16px;
+  // margin-left: 12px;
+  margin-bottom:  12px;
+  background: #fff;
+  border: 1px solid #ededed;
+  border-radius: 12px;
+  color: #242424;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+
+  .bi-clock-history {
+    color: #e91e24;
+    font-size: 19px;
+  }
+
+  .bi-chevron-right {
+    margin-left: auto;
+    color: #999;
+    font-size: 12px;
+  }
+
+  &:hover {
+    background: #fff5f5;
+    border-color: #ffd8d8;
+    color: #e91e24;
+  }
+}

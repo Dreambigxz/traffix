@@ -33,7 +33,7 @@
 
       <section class="referral-hero">
         <div class="referral-hero__content">
-          <span>Total Referral Earnings</span>
+          <span>Total Earnings</span>
 
           <strong>
             {{
@@ -114,13 +114,14 @@
 
             <span (click)="quickNav.go('/invites/inactives')" class="pending-referral">
               {{
-                referralData()[
-                  'pending_ref'
-                ]
+                totalNetwork() - totalActive()
               }}
               pending <i class="bi bi-chevron-right"></i>
             </span>
 
+              <!-- referralData()[
+                'pending_ref'
+              ] -->
         </header>
 
         <div class="referral-link">
@@ -234,7 +235,7 @@
           </div>
 
           <small>
-            {{ totalNetwork() }} members
+            {{ totalActive() }} members
           </small>
         </header>
 
@@ -296,7 +297,7 @@
                   </small>
 
                   <span (click)="viewGeneration(generation)" class="btn-view" type="button">
-                    View
+                    View users
                     <i class="bi bi-chevron-right" aria-hidden="true"></i>
                   </span>
                 </div>
