@@ -7,7 +7,7 @@ import { timeout, catchError } from 'rxjs/operators';
 export class RequestDataService {
 
   production = true
-  // useUrl = 'http://127.0.0.1:8000/api'
+  useUrl = 'http://127.0.0.1:8000/api'
   // ng serve --host 0.0.0.0
 
   // rr
