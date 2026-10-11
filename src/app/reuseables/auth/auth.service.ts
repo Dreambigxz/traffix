@@ -332,7 +332,7 @@ export class AuthService {
   // social Auth
   loginWithGoogle() {
 
-    const url = "https://traffix-production.up.railway.app"
+    const url = "https://traffix.cc"
     // const url = 'http://localhost:4200'
     const googleClientId = '944570288109-vn0fc41qlu672r3qrhg6988kqgd9lbtn.apps.googleusercontent.com';
     const redirectUri = encodeURIComponent(`${url}/authentication?callback=google`);
