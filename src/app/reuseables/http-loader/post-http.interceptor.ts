@@ -128,35 +128,63 @@ export const PostHttpInterceptor: HttpInterceptorFn = (
 
   req = req.clone({ headers });
 
-  const isPost = req.method === 'POST';
-  const isGet = req.method === 'GET';
+  // const isPost = req.method === 'POST';
+  // const isGet = req.method === 'GET';
   const isSafari = isSafariBrowser();
 
-  const hideSpinnerimportant = req.url.includes('hideSpinnerimportant') || req.url.includes('hideSpinner')
-  // Toggle loader.
-  if (
-    (!req.url.includes('hideSpinner') && isGet) ||
-    isIOS() ||
-    req.url.includes('upload/') ||
-    isSafari
-  ) {
-    if (
-      !req.url.includes('hideSpinnerimportant') &&
-      !req.url.includes('coingecko')
-    ) {
-      loaderService.show();
-    }
-  }
+  // const hideSpinnerimportant = req.url.includes('hideSpinnerimportant') || req.url.includes('hideSpinner')
+  // // Toggle loader.
+  // if (
+  //   (!req.url.includes('hideSpinner') && isGet) ||
+  //   isIOS() ||
+  //   req.url.includes('upload/') ||
+  //   isSafari
+  // ) {
+  //   if (
+  //     !req.url.includes('hideSpinnerimportant') &&
+  //     !req.url.includes('coingecko')
+  //   ) {
+  //     loaderService.show();
+  //   }
+  // }
 
-  if (isPost) {
-    if (isBrowser()) {
+  const isPost = req.method === 'POST';
+  const isGet = req.method === 'GET';
+
+  const hideSpinner =
+    req.url.includes('hideSpinner');
+
+  const hideSpinnerimportant =
+    req.url.includes('hideSpinnerimportant');
+
+  const shouldShowLoader =
+    (isGet || isPost) &&
+    !hideSpinner &&
+    !hideSpinnerimportant &&
+    !req.url.includes('coingecko');
+
+  let loaderRequestId: symbol | null = null;
+
+  if (shouldShowLoader) {
+    if (isPost && isBrowser()) {
       const activeButton =
         document.activeElement as HTMLElement | null;
 
       loaderService.setLoadingButton(activeButton);
     }
-    if (!loaderService._loading.value&&!req.url.includes("hideSpinnerimportant")) loaderService.show() ;
+
+    loaderRequestId = loaderService.show(req.method);
   }
+
+  // if (isPost) {
+  //   if (isBrowser()) {
+  //     const activeButton =
+  //       document.activeElement as HTMLElement | null;
+  //
+  //     loaderService.setLoadingButton(activeButton);
+  //   }
+  //   if (!loaderService._loading.value&&!req.url.includes("hideSpinnerimportant")) loaderService.show() ;
+  // }
 
   return next(req).pipe(
     // 49-second safety timeout.
@@ -293,11 +321,21 @@ export const PostHttpInterceptor: HttpInterceptorFn = (
       return throwError(() => error);
     }),
 
-    finalize(() => {
-      loaderService.setLoadingButton(null);
+    // finalize(() => {
+    //   loaderService.setLoadingButton(null);
+    //
+    //   if (loaderService._loading.value) {
+    //     loaderService.hide();
+    //   }
+    // })
 
-      if (loaderService._loading.value) {
-        loaderService.hide();
+    finalize(() => {
+      if (loaderRequestId !== null) {
+        loaderService.hide(loaderRequestId);
+      }
+
+      if (isPost) {
+        loaderService.setLoadingButton(null);
       }
     })
   );

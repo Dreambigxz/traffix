@@ -16,10 +16,16 @@ export class LoaderService {
   public _loading = new BehaviorSubject<boolean>(false);
   public loading$ = this._loading.asObservable();
 
+  public requestMethod = new BehaviorSubject<string | null>(null);
+  public requestMethod$ = this.requestMethod.asObservable();
+
   private _loadingButton = new BehaviorSubject<HTMLElement | null>(null);
   public loadingButton$ = this._loadingButton.asObservable();
 
   public activeButton: HTMLElement | null = null;
+
+  private activeRequests = new Map<symbol, string>();
+
 
   constructor(
     @Inject(DOCUMENT)
@@ -29,15 +35,37 @@ export class LoaderService {
     private platformId: object
   ) {}
 
-  show() {
-    this._loading.next(true);
+
+  show(method: string = 'GET'): symbol {
+
+    console.log({method});
+
+    const requestId = Symbol('loader-request');
+
+    this.activeRequests.set(requestId, method.toUpperCase());
+
+    this.updateLoader();
+
+    return requestId;
   }
 
+  hide(requestId: symbol): void {
+    this.activeRequests.delete(requestId);
 
-  hide(): void {
-     this._loading.next(false);
+    this.updateLoader();
+  }
 
-   }
+  private updateLoader(): void {
+    const methods = Array.from(this.activeRequests.values());
+
+    // Prioritize POST when GET and POST run together
+    const method = methods.includes('POST')
+      ? 'POST'
+      : methods[methods.length - 1] ?? null;
+
+    this.requestMethod.next(method);
+    this._loading.next(methods.length > 0);
+  }
 
   setLoadingButton(button: HTMLElement | null) {
     // 🔁 remove previous button loading state

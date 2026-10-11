@@ -46,7 +46,7 @@ export class SlidersComponent {
     {
       image:
         '/assets/images/slides/slide3.jpeg',
-        id: 2,
+        id: 3,
 
     },
   ];

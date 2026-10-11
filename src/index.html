@@ -5,10 +5,7 @@
   <title>GAds</title>
   <base href="/">
 
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover"
-  />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -46,12 +43,53 @@
   <app-root></app-root>
 
   <div class="se-pre-con main" id="loader">
-       <div class="loader">
-           <div class="loader-inner ball-clip-rotate-multiple">
-               <div></div>
-               <div></div>
-           </div>
-       </div>
+    <div
+    class="spinner-overlay get-loading"
+    role="status"
+    aria-live="polite"
+    aria-label="Loading"
+    >
+
+    <div class="traffix-loader">
+
+      <!-- ANIMATED LOGO -->
+      <div class="loader-logo-wrap">
+
+        <div class="loader-glow"></div>
+
+        <div class="loader-logo">
+          <span class="logo-dark">Traffi</span>
+          <span class="logo-red">X</span>
+        </div>
+
+      </div>
+
+
+      <!-- REQUEST STATUS -->
+      <div class="loader-content">
+
+        <span class="loader-title">
+          Just a moment...
+        </span>
+
+        <!-- ANIMATED DOTS -->
+        <div class="loader-dots" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+      </div>
+
+
+      <!-- ANIMATED PROGRESS LINE -->
+      <div class="loader-progress" aria-hidden="true">
+        <span></span>
+      </div>
+
+    </div>
+
+    </div>
    </div>
   <div id="google_translate_element" style="display:none;"></div>
 

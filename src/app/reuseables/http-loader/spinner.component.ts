@@ -11,27 +11,70 @@ import { Observable, of} from 'rxjs';
   imports: [ CommonModule],
 
   template: `
-    <div *ngIf="isLoading | async" class="spinner-overlay">
 
-    <div class="se-pre-con" id="loader">
-         <div class="loader">
-             <div class="loader-inner ball-clip-rotate-multiple">
-                 <div></div>
-                 <div></div>
-             </div>
-         </div>
-     </div>
-    </div>
+
+      <div
+      *ngIf="loaderService.loading$ | async"
+      class="spinner-overlay"
+      [class.get-loading]="(loaderService.requestMethod$ | async) === 'GET'"
+      [class.post-loading]="(loaderService.requestMethod$ | async) === 'POST'"
+      role="status"
+      aria-live="polite"
+      aria-label="Loading"
+      >
+
+      <div class="traffix-loader">
+
+        <!-- ANIMATED LOGO -->
+        <div class="loader-logo-wrap">
+
+          <div class="loader-glow"></div>
+
+          <div class="loader-logo">
+            <span class="logo-dark">Traffi</span>
+            <span class="logo-red">X</span>
+          </div>
+
+        </div>
+
+
+        <!-- REQUEST STATUS -->
+        <div class="loader-content">
+
+          <span class="loader-title">
+            {{
+              (loaderService.requestMethod$ | async) === 'POST'
+                ? 'Processing request...'
+                : 'Just a moment...'
+            }}
+          </span>
+
+          <!-- ANIMATED DOTS -->
+          <div class="loader-dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
+        </div>
+
+
+        <!-- ANIMATED PROGRESS LINE -->
+        <div class="loader-progress" aria-hidden="true">
+          <span></span>
+        </div>
+
+      </div>
+
+      </div>
+
+
 `,
-styles: [`
-
-    
-
-  `]
+  // styleUrl: "../css/spinner.css"
 })
 export class SpinnerComponent {
     isLoading: Observable<boolean>;
-   constructor(private loaderService: LoaderService) {
+   constructor(public loaderService: LoaderService) {
      this.isLoading = this.loaderService.loading$; // ✅ safe
    }
 

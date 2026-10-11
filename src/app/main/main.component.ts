@@ -43,5 +43,18 @@ export class MainComponent {
       }
     }
 
+    get getCurrentDateTime(): string {
+      return new Intl.DateTimeFormat('en-US', {
+
+        timeZone: 'America/Sao_Paulo',
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        // year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit'
+      }).format(new Date());
+    }
+
 
 }

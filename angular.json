@@ -46,7 +46,8 @@
               "src/styles.scss",
 
               "src/app/reuseables/css/button.css",
-              "src/app/reuseables/css/style.css"
+              "src/app/reuseables/css/style.css",
+              "src/app/reuseables/css/spinner.css"
 
             ],
             "scripts": []

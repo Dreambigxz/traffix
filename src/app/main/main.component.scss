@@ -173,3 +173,87 @@
     font-size: var(--font-size-xs);
   }
 }
+
+
+.date-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  background: #ffffff;
+  border: 1px solid #eceef2;
+  border-radius: 12px;
+  box-shadow: 0 3px 12px rgba(20, 25, 40, 0.035);
+  max-width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.date-text:hover {
+  border-color: #f4c5c7;
+  box-shadow: 0 5px 16px rgba(20, 25, 40, 0.06);
+}
+
+.server-indicator {
+  width: 7px;
+  height: 7px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #e91e24;
+  box-shadow: 0 0 0 4px rgba(233, 30, 36, 0.09);
+}
+
+.date-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.date-label {
+  color: #9298a4;
+  font-size: 9px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.date {
+  color: #202635;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.date-icon {
+  margin-left: 6px;
+  color: #e91e24;
+  font-size: 15px;
+  opacity: 0.75;
+}
+
+/* Mobile */
+
+@media (max-width: 480px) {
+  .date-text {
+    gap: 8px;
+    padding: 8px 10px;
+    border-radius: 10px;
+  }
+
+  .date-label {
+    font-size: 8px;
+  }
+
+  .date {
+    font-size: 11px;
+  }
+
+  .date-icon {
+    font-size: 13px;
+    margin-left: 2px;
+  }
+}

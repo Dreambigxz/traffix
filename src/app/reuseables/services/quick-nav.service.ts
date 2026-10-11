@@ -64,7 +64,10 @@ export class QuickNavService {
 
   helpLinks = {
 
-    'tech': ""
+    tech: "",
+    customer_care: "https://t.me/TraffixCS",
+    telelgramChannel:"https://t.me/+5JtdjrQOLscyNGFk",
+    telelgramGroup:"https://t.me/+dElfIGdBEZk5MmM8"
   }
 
    go(url: string,  queryParams?: any, fragment?: string,): void {

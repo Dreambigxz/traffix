@@ -159,7 +159,10 @@ export class DetailsComponent implements OnInit {
         this.clickProgressButton();
       }
 
-      this.isSubmittingComment = false
+      this.isSubmittingComment = false;
+      this.commentForm.reset({
+         content: ''
+       });
 
     })
   }

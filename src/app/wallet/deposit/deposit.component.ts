@@ -62,7 +62,9 @@ export class DepositComponent {
   }
 
   checkPaymentStatus(){
-
+    this.quickNav.reqServerData.get('wallet/?dir=start_deposit').subscribe((res)=>{
+        this.walletService.initSetting()//.deposit(this);
+    })
   }
 
 

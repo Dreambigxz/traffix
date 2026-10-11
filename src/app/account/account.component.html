@@ -284,7 +284,7 @@
     <div class="support-list">
       <a
         class="support-item"
-        routerLink="/help"
+        (click)='quickNav.openTab(quickNav.helpLinks.customer_care)'
       >
         <span class="support-icon">
           <i class="bi bi-headset"></i>
@@ -302,8 +302,7 @@
 
       <a
         class="support-item support-item--channel"
-        href="https://t.me/your_channel"
-        target="_blank"
+        (click)='quickNav.openTab(quickNav.helpLinks.telelgramChannel)'
         rel="noopener noreferrer"
       >
         <span class="support-icon">

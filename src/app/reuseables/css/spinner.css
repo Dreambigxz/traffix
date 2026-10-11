@@ -1,0 +1,348 @@
+
+/* ==========================================
+   TRAFFIX PREMIUM LOADER
+========================================== */
+
+.spinner-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.45);
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+
+  animation: loaderFadeIn 0.25s ease both;
+}
+
+/* ==========================================
+   GET REQUEST OVERLAY
+========================================== */
+
+.spinner-overlay.get-loading {
+  background: rgba(255, 255, 255, 0.55);
+
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+/* ==========================================
+   POST REQUEST OVERLAY
+========================================== */
+
+.spinner-overlay.post-loading {
+  background: rgba(255, 255, 255, 0.28);
+
+  backdrop-filter: blur(1px);
+  -webkit-backdrop-filter: blur(1px);
+}
+
+/* ==========================================
+   LOADER CONTAINER
+========================================== */
+
+.traffix-loader {
+  position: relative;
+  z-index: 1;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: min(240px, 82vw);
+  padding: 22px 18px 25px;
+
+  background: transparent;
+  /* #rgba(255, 255, 255, 0.84); */
+
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+
+  box-shadow:
+    0 12px 40px rgba(20, 25, 40, 0.07),
+    0 2px 8px rgba(20, 25, 40, 0.025);
+
+  text-align: center;
+  box-sizing: border-box;
+}
+
+/* ==========================================
+   LOGO WRAPPER
+========================================== */
+
+.loader-logo-wrap {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 180px;
+  height: 100px;
+}
+
+/* ==========================================
+   SOFT RED GLOW
+========================================== */
+
+.loader-glow {
+  position: absolute;
+
+  width: 110px;
+  height: 65px;
+
+  border-radius: 50%;
+  background: rgba(233, 30, 36, 0.13);
+
+  filter: blur(28px);
+
+  animation: glowPulse 2.4s ease-in-out infinite;
+}
+
+/* ==========================================
+   ANIMATED TRAFFIX LOGO
+========================================== */
+
+.loader-logo {
+  position: relative;
+
+  display: flex;
+  align-items: baseline;
+
+  font-size: 42px;
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+
+  transform-origin: center;
+
+  animation: logoBreath 2.4s ease-in-out infinite;
+}
+
+.loader-logo .logo-dark {
+  color: #202632;
+}
+
+.loader-logo .logo-red {
+  color: #e91e24;
+}
+
+/* ==========================================
+   LOADING CONTENT
+========================================== */
+
+.loader-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  gap: 12px;
+  margin-top: -5px;
+}
+
+.loader-title {
+  color: #858d9a;
+
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   ANIMATED DOTS
+========================================== */
+
+.loader-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+}
+
+.loader-dots span {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+  background: #e91e24;
+
+  animation: dotBounce 1.3s ease-in-out infinite;
+}
+
+.loader-dots span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.loader-dots span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* ==========================================
+   ANIMATED PROGRESS LINE
+========================================== */
+
+.loader-progress {
+  position: relative;
+
+  width: 115px;
+  height: 3px;
+
+  margin-top: 24px;
+
+  overflow: hidden;
+
+  border-radius: 10px;
+  background: #f0e5e6;
+}
+
+.loader-progress span {
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 42%;
+  height: 100%;
+
+  border-radius: inherit;
+
+  background: linear-gradient(
+    90deg,
+    #ff8185,
+    #e91e24
+  );
+
+  animation: progressSlide 1.7s ease-in-out infinite;
+}
+
+/* ==========================================
+   ANIMATIONS
+========================================== */
+
+/* LOGO ZOOM IN AND OUT */
+
+@keyframes logoBreath {
+  0%, 100% {
+    transform: scale(0.94);
+    opacity: 0.85;
+  }
+
+  50% {
+    transform: scale(1.06);
+    opacity: 1;
+  }
+}
+
+/* RED GLOW */
+
+@keyframes glowPulse {
+  0%, 100% {
+    transform: scale(0.8);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: scale(1.25);
+    opacity: 1;
+  }
+}
+
+/* LOADING DOTS */
+
+@keyframes dotBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+
+  30% {
+    transform: translateY(-6px);
+    opacity: 1;
+  }
+}
+
+/* MOVING PROGRESS LINE */
+
+@keyframes progressSlide {
+  0% {
+    transform: translateX(-110%);
+  }
+
+  100% {
+    transform: translateX(280%);
+  }
+}
+
+/* OVERLAY ENTRANCE */
+
+@keyframes loaderFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* ==========================================
+   MOBILE RESPONSIVENESS
+========================================== */
+
+@media (max-width: 480px) {
+
+  .traffix-loader {
+    width: min(210px, 78vw);
+    padding: 17px 14px 21px;
+    border-radius: 16px;
+  }
+
+  .loader-logo-wrap {
+    width: 150px;
+    height: 90px;
+  }
+
+  .loader-logo {
+    font-size: 36px;
+  }
+
+  .loader-glow {
+    width: 95px;
+    height: 55px;
+  }
+
+  .loader-title {
+    font-size: 11px;
+  }
+
+  .loader-progress {
+    margin-top: 20px;
+  }
+}
+
+/* ==========================================
+   REDUCED MOTION
+========================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  .spinner-overlay,
+  .loader-logo,
+  .loader-glow,
+  .loader-dots span,
+  .loader-progress span {
+    animation: none;
+  }
+
+  .loader-progress span {
+    width: 100%;
+  }
+}

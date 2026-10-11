@@ -44,6 +44,8 @@ export class NewsHeaderComponent {
 
   get getCurrentDateTime(): string {
     return new Intl.DateTimeFormat('en-US', {
+
+      timeZone: 'America/Sao_Paulo',
       weekday: 'short',
       month: 'short',
       day: 'numeric',
