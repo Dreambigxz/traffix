@@ -65,7 +65,11 @@ export class PaymentMethodModalComponent
 
   continue(): void {
 
+    console.log({selectedType:this.selectedType});
+
     if (this.selectedType === 'crypto') {
+
+      console.log("processing crypto");
 
       if (!this.hasCrypto) return;
 
@@ -77,8 +81,8 @@ export class PaymentMethodModalComponent
 
     } else {
 
-      if (!this.hasLocal) return;
-
+      // if (!this.hasLocal) return;
+      console.log("processing local");
       this.walletService.changeTab('local');
 
       const methods = this.walletService.localMethods;

@@ -5,12 +5,14 @@
   [balance]="walletService.quickNav.storeData.store['wallet']?.balance"
 />
 
-<app-local-header
-  *ngIf="walletService.selectedTab === 'local'"
-  [walletService]="walletService"
-  [ localMethods]="walletService.localMethods"
-  [balance]="walletService.quickNav.storeData.store['wallet']?.balance"
-/>
+
+  @if (walletService.selectedTab === 'local') {
+    <app-local-header
+      [walletService]="walletService"
+      [balance]="walletService.quickNav.storeData.store['wallet']?.balance">
+
+    </app-local-header>
+  }
 
 
 <app-payment-method-modal
