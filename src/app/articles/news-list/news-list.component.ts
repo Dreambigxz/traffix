@@ -27,6 +27,8 @@ export class NewsListComponent {
   @Output() viewMore = new EventEmitter<string>();
   @Output() articleSelected = new EventEmitter<any>();
 
+  @Input() onImageError!: any
+
 
   constructor(
     private router: Router

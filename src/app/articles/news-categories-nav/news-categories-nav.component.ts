@@ -139,7 +139,7 @@ export class NewsCategoriesNavComponent {
 
 
   constructor(
-    private quickNav: QuickNavService,
+    public quickNav: QuickNavService,
     private router: Router
   ) {}
 

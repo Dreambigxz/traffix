@@ -15,16 +15,16 @@
 
         <!-- IMAGE -->
 
+
         <img
           class="article-image"
-          [src]="
-            article.image ||
-            article.image_url
-          "
+          [src]="article.image || article.image_url || 'assets/img/logo.svg'"
           [alt]="article.title"
           loading="lazy"
           decoding="async"
+          (error)="onImageError($event)"
         />
+
 
 
         <!-- CONTENT -->

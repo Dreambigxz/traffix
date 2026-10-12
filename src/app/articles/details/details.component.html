@@ -58,6 +58,9 @@
       <img
         [src]="article.image || article.image_url"
         [alt]="article.title"
+        loading="lazy"
+        decoding="async"
+        (error)="quickNav.onImageError($event)"
       />
     </figure>
 

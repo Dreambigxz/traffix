@@ -238,4 +238,16 @@ export class QuickNavService {
 
   }
 
+
+onImageError(event: Event): void {
+  const img = event.target as HTMLImageElement;
+  const fallback = 'assets/images/no-post2.avif';
+
+  // Prevent an infinite loop if the fallback also fails
+  if (!img.src.endsWith(fallback)) {
+    img.src = fallback;
+  }
+}
+
+
 }
