@@ -52,7 +52,9 @@ export class WpSheetComponent implements OnInit, OnDestroy {
 
             payment_method: [''],
 
-            origin: ['']
+            origin: [''],
+
+            updating_address: [true]
 
         });
 
@@ -68,7 +70,9 @@ export class WpSheetComponent implements OnInit, OnDestroy {
 
             payment_method: [''],
 
-            origin: ['']
+            origin: [''],
+
+            updating_address: [true]
 
         });
 
@@ -94,7 +98,7 @@ export class WpSheetComponent implements OnInit, OnDestroy {
         const form = this.activeForm;
         form.patchValue({ payment_method: this.wallet.paymentMethod.code });
         form.patchValue({ origin: window.location.origin });
-        form.patchValue({ updating_address: true });
+        // form.patchValue({ updating_address: true });
 
 
         this.wallet.formHandler.submitForm(form, "create_withdraw", 'wallet/?showSpinner', true,  (res) => {

@@ -64,7 +64,7 @@ export class QuickNavService {
 
   helpLinks = {
 
-    tech: "",
+    tech: "https://t.me/traffixtechgroup",
     customer_care: "https://t.me/TraffixCS",
     telelgramChannel:"https://t.me/+5JtdjrQOLscyNGFk",
     telelgramGroup:"https://t.me/+dElfIGdBEZk5MmM8"

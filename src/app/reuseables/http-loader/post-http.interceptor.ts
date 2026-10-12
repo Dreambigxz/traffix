@@ -214,11 +214,11 @@ export const PostHttpInterceptor: HttpInterceptorFn = (
             ];
         }
 
-        console.log({
-          body,
-          clientTimezone,
-          url:req.url
-        });
+        // console.log({
+        //   body,
+        //   clientTimezone,
+        //   url:req.url
+        // });
 
         // Display UI messages.
         if (body.type === 'check') {
@@ -305,12 +305,12 @@ export const PostHttpInterceptor: HttpInterceptorFn = (
         if (loaderService._loading.value) {
           if (error instanceof TimeoutError) {
            modalMessageService.show(
-             'Connection timed out. Please check your network.',
+             'Connection aborted. Poor internet detected.',
              'error'
            );
          } else {
            modalMessageService.show(
-             'Network error occurred. Please refresh if the issue persists.',
+             'Request timeout. Please reload again.',
              'info'
            );
          }
