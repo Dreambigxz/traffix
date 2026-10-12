@@ -70,6 +70,7 @@
 
 .spinner-overlay.post-loading .traffix-loader{
   background: #fff;
+  border-radius: 49px;
 }
 /* ==========================================
    LOGO WRAPPER

@@ -79,35 +79,6 @@ export class NewsCategoriesNavComponent {
       icon: 'bi-grid'
     },
 
-    // {
-    //   key: 'latest',
-    //   label: 'Latest',
-    //   icon: 'bi-newspaper'
-    // },
-    //
-    // {
-    //   key: 'sports',
-    //   label: 'Sports',
-    //   icon: 'bi-dribbble'
-    // },
-    //
-    // {
-    //   key: 'technology',
-    //   label: 'Technology',
-    //   icon: 'bi-cpu-fill'
-    // },
-    //
-    // {
-    //   key: 'business',
-    //   label: 'Business',
-    //   icon: 'bi-bar-chart-fill'
-    // },
-    //
-    // {
-    //   key: 'entertainment',
-    //   label: 'Entertainment',
-    //   icon: 'bi-camera-reels-fill'
-    // }
   ];
 
 
