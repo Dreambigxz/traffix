@@ -8,8 +8,8 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 
 import { TruncateCenterPipe } from '../../reuseables/pipes/truncate-center.pipe';
 
-import { WalletHeaderComponent } from "../header/w-header.component";
-import { CryptoHeaderComponent } from "../crypto-header/crypto-header.component";
+import { WalletComponent } from "../wallet.component";
+
 import { WalletService } from "../service";
 import { LocalComponent } from "./local/local.component";
 import { HeaderComponent } from "../../components/header/header.component";
@@ -20,13 +20,14 @@ import { QuickNavService } from '../../reuseables/services/quick-nav.service';
 @Component({
   selector: 'app-deposit',
   imports: [
-    WalletHeaderComponent,
+    WalletComponent,
     CommonModule,
     TruncateCenterPipe,
     LocalComponent,
     HeaderComponent,
     SpinnerComponent,
-    CryptoHeaderComponent
+    // CryptoHeaderComponent,
+    // LocalHeaderComponent
   ],
   templateUrl: './deposit.component.html',
   styleUrl: './deposit.component.css'
@@ -49,7 +50,7 @@ export class DepositComponent {
 
     if (!this.quickNav.storeData.get("deposit")) {
         this.quickNav.reqServerData.get('wallet/?dir=start_deposit').subscribe((res)=>{
-          this.walletService.initSetting()//.deposit(this);
+          this.walletService.initSetting().deposit(this);
       })}
   }
 
@@ -63,7 +64,7 @@ export class DepositComponent {
 
   checkPaymentStatus(){
     this.quickNav.reqServerData.get('wallet/?dir=start_deposit').subscribe((res)=>{
-        this.walletService.initSetting()//.deposit(this);
+        this.walletService.initSetting().deposit(this);
     })
   }
 

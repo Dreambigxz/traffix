@@ -1,1 +1,20 @@
-<p>wallet works!</p>
+<app-crypto-header
+  *ngIf="walletService.selectedTab === 'crypto'"
+  [assets]=walletService.assets()
+  [walletService]="walletService"
+  [balance]="walletService.quickNav.storeData.store['wallet']?.balance"
+/>
+
+<app-local-header
+  *ngIf="walletService.selectedTab === 'local'"
+  [walletService]="walletService"
+  [ localMethods]="walletService.localMethods"
+  [balance]="walletService.quickNav.storeData.store['wallet']?.balance"
+/>
+
+
+<app-payment-method-modal
+
+  *ngIf="walletService.quickNav.storeData.store['wallet']"
+  [walletService]="walletService">
+</app-payment-method-modal>

@@ -1,0 +1,163 @@
+
+@if (canShow) {
+
+  <div
+    class="payment-method-backdrop"
+    (click)="close()"
+  >
+
+    <section
+      class="payment-method-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="payment-method-title"
+      (click)="$event.stopPropagation()"
+    >
+
+      <!-- HEADER -->
+      <header class="modal-header">
+
+        <div class="modal-heading">
+
+          <span class="modal-heading__icon">
+            <i class="bi bi-wallet2"></i>
+          </span>
+
+          <div>
+            <span class="eyebrow">Deposit Method</span>
+
+            <h2 id="payment-method-title">
+              Choose how to deposit
+            </h2>
+
+            <p>Select your preferred payment option</p>
+          </div>
+
+        </div>
+
+        <button
+          type="button"
+          class="modal-close"
+          aria-label="Close"
+          (click)="close()"
+        >
+          <i class="bi bi-x-lg"></i>
+        </button>
+
+      </header>
+
+
+      <!-- PAYMENT OPTIONS -->
+      <div class="payment-options">
+
+        <!-- CRYPTO -->
+        <button
+          type="button"
+          class="payment-option"
+          [class.active]="selectedType === 'crypto'"
+          [disabled]="!hasCrypto"
+          (click)="selectType('crypto')"
+        >
+
+          <span class="option-icon crypto">
+            <i class="bi bi-currency-bitcoin"></i>
+          </span>
+
+          <span class="option-content">
+
+            <strong>Cryptocurrency</strong>
+
+            <small>
+              Deposit using supported crypto networks
+            </small>
+
+            <span class="option-tag">
+              <i class="bi bi-shield-check"></i>
+              Crypto Wallet
+            </span>
+
+          </span>
+
+          <i
+            class="bi option-check"
+            [class.bi-check-circle-fill]="selectedType === 'crypto'"
+            [class.bi-circle]="selectedType !== 'crypto'"
+          ></i>
+
+        </button>
+
+
+        <!-- LOCAL -->
+        <button
+          type="button"
+          class="payment-option"
+          [class.active]="selectedType === 'local'"
+          [disabled]="!hasLocal"
+          (click)="selectType('local')"
+        >
+
+          <span class="option-icon local">
+            <i class="bi bi-bank"></i>
+          </span>
+
+          <span class="option-content">
+
+            <strong>Local Bank Transfer</strong>
+
+            <small>
+              Deposit using supported local payment methods
+            </small>
+
+            <span class="option-tag">
+              <i class="bi bi-globe2"></i>
+              Local Payment
+            </span>
+
+          </span>
+
+          <i
+            class="bi option-check"
+            [class.bi-check-circle-fill]="selectedType === 'local'"
+            [class.bi-circle]="selectedType !== 'local'"
+          ></i>
+
+        </button>
+
+      </div>
+
+
+      <!-- INFORMATION -->
+      <div class="payment-note">
+        <i class="bi bi-info-circle"></i>
+        <span>
+          Available payment options depend on your
+          account and supported currencies.
+        </span>
+      </div>
+
+
+      <!-- FOOTER -->
+      <footer class="modal-footer">
+
+        <button
+          type="button"
+          class="continue-button"
+          [disabled]="
+            (selectedType === 'crypto' && !hasCrypto) ||
+            (selectedType === 'local' && !hasLocal)
+          "
+          (click)="continue()"
+        >
+          Continue with
+          {{ selectedType === 'crypto' ? 'Crypto' : 'Local Bank' }}
+
+          <i class="bi bi-arrow-right"></i>
+        </button>
+
+      </footer>
+
+    </section>
+
+  </div>
+
+}

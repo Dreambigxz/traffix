@@ -1,0 +1,226 @@
+<section class="crypto-header">
+  <header class="page-header">
+    <button
+      class="header-button"
+      type="button"
+      aria-label="Go back"
+      onclick="history.back()"
+    >
+      <i
+        class="bi bi-chevron-left"
+        aria-hidden="true"
+      ></i>
+    </button>
+
+    <h1>{{ walletService.Page|titlecase }}</h1>
+
+    <a
+      class="header-button"
+      routerLink="/wallet/transactions"
+      aria-label="View transactions"
+    >
+      <i
+        class="bi bi-clock-history"
+        aria-hidden="true"
+      ></i>
+    </a>
+  </header>
+
+  <div class="crypto-header__content">
+    <section class="balance-card">
+      <div class="balance-main">
+        <span class="balance-label">
+          Total Balance
+
+          <i
+            class="bi bi-eye"
+            aria-hidden="true"
+          ></i>
+        </span>
+
+        <strong>
+          {{
+            balance()
+              | currency:
+                currency():
+                'symbol':
+                '1.2-2'
+          }}
+        </strong>
+
+        <small>Available account balance</small>
+      </div>
+
+      <div class="total-transactions">
+        <span class="total-transactions__icon deposit"
+          *ngIf="walletService.Page === 'deposit'">
+          <i
+            class="bi bi-arrow-down-left"
+            aria-hidden="true"
+
+          ></i>
+        </span>
+        <span class="total-transactions__icon withdraw"
+          *ngIf="walletService.Page === 'withdraw'">
+          <i
+            class="bi bi-arrow-up-right"
+            aria-hidden="true"
+          ></i>
+        </span>
+
+        <div>
+          <small>Total {{walletService.Page}}</small>
+
+          <strong>
+            {{
+              walletService.totalTransaction || 0
+                | currency:
+                  currency():
+                  'symbol':
+                  '1.2-2'
+            }}
+          </strong>
+        </div>
+      </div>
+
+      <svg
+        class="balance-chart"
+        viewBox="0 0 160 60"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          d="
+            M0 53
+            C20 48, 24 37, 40 43
+            S61 25, 76 32
+            S98 13, 112 23
+            S136 4, 160 9
+          "
+        ></path>
+      </svg>
+    </section>
+
+    <nav
+      class="wallet-tabs"
+      aria-label="Wallet actions"
+    >
+      <a
+        routerLink="/wallet/deposit"
+        [class.active]="
+          walletService.Page === 'deposit'
+        "
+      >
+        Deposit
+      </a>
+
+      <a
+        routerLink="/wallet/withdraw"
+        [class.active]="
+          walletService.Page === 'withdraw'
+        "
+      >
+        Withdraw
+      </a>
+    </nav>
+
+    <section class="asset-network-card">
+      <div class="selection-heading">
+        <div>
+          <small>Select asset</small>
+          <h2>Choose cryptocurrency</h2>
+        </div>
+
+        @if (
+          activeAsset()?.available_balance
+        ) {
+          <span class="asset-balance">
+            Available:
+            <strong>
+              {{
+                activeAsset()
+                  ?.available_balance
+              }}
+              {{
+                activeAsset()?.symbol
+              }}
+            </strong>
+          </span>
+        }
+      </div>
+
+      <div class="asset-grid">
+        @for (
+          asset of assets();
+          track asset.symbol
+        ) {
+          <button
+            class="asset-button"
+            type="button"
+            [class.active]="
+              walletService.selectedCrypto.symbol ===
+              asset.symbol
+            "
+            (click)="selectAsset(asset)"
+          >
+            <span
+              class="asset-icon"
+              [style.--asset-color]="
+                asset.color
+              "
+            >
+              {{ assetIcon(asset.symbol) }}
+            </span>
+
+            <span>{{ asset.symbol }}</span>
+
+            @if (
+              walletService.selectedCrypto.symbol ===
+              asset.symbol
+            ) {
+              <i
+                class="bi bi-check-circle-fill"
+                aria-hidden="true"
+              ></i>
+            }
+          </button>
+        }
+      </div>
+
+      <div class="network-area">
+        <label for="crypto-network">
+          Select network
+        </label>
+
+        <div class="network-select">
+          <span class="network-icon">
+            {{
+              assetIcon(walletService?.selectedCrypto?.symbol)
+            }}
+          </span>
+
+          <select
+            id="crypto-network"
+            [value]="selectedNetworkId()"
+            (change)="selectNetwork($event)"
+          >
+            @for (
+              network of
+                walletService.selectedCrypto?.networks;
+              track network.id
+            ) {
+              <option [value]="network.id">
+                {{ network.display_name }}
+              </option>
+            }
+          </select>
+
+          <i
+            class="bi bi-chevron-down"
+            aria-hidden="true"
+          ></i>
+        </div>
+      </div>
+    </section>
+  </div>
+</section>

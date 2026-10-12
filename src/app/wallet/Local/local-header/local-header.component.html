@@ -1,0 +1,179 @@
+
+<section class="local-header">
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+
+    <button
+      class="header-button"
+      type="button"
+      aria-label="Go back"
+      (click)="walletService.quickNav.goBack()"
+    >
+      <i class="bi bi-chevron-left"></i>
+    </button>
+
+    <h1>{{ walletService.Page | titlecase }}</h1>
+
+    <a
+      class="header-button"
+      routerLink="/wallet/transactions"
+      aria-label="View transactions"
+    >
+      <i class="bi bi-clock-history"></i>
+    </a>
+
+  </header>
+
+
+  <div class="local-header__content">
+
+    <!-- BALANCE CARD -->
+    <section class="balance-card">
+
+      <div class="balance-main">
+
+        <span class="balance-label">
+          Total Balance
+          <i class="bi bi-eye"></i>
+        </span>
+
+        <strong>
+          {{
+            balance()
+              | currency:currency():'symbol':'1.2-2'
+          }}
+        </strong>
+
+        <small>Available account balance</small>
+
+      </div>
+
+
+      <!-- TOTAL TRANSACTIONS -->
+      <div class="total-transactions">
+
+        <span
+          class="total-transactions__icon deposit"
+          *ngIf="walletService.Page === 'deposit'"
+        >
+          <i class="bi bi-arrow-down-left"></i>
+        </span>
+
+        <span
+          class="total-transactions__icon withdraw"
+          *ngIf="walletService.Page === 'withdraw'"
+        >
+          <i class="bi bi-arrow-up-right"></i>
+        </span>
+
+        <div>
+
+          <small>
+            Total {{ walletService.Page }}
+          </small>
+
+          <strong>
+            {{
+              walletService.totalAmount
+                | currency:currency():'symbol':'1.2-2'
+            }}
+          </strong>
+
+        </div>
+
+      </div>
+
+
+      <!-- DECORATIVE CHART -->
+      <svg
+        class="balance-chart"
+        viewBox="0 0 160 60"
+        preserveAspectRatio="none"
+        aria-hidden="true"
+      >
+        <path
+          d="
+            M0 53
+            C20 48, 24 37, 40 43
+            S61 25, 76 32
+            S98 13, 112 23
+            S136 4, 160 9
+          "
+        ></path>
+      </svg>
+
+    </section>
+
+
+    <!-- WALLET TABS -->
+    <nav
+      class="wallet-tabs"
+      aria-label="Wallet actions"
+    >
+
+      <a
+        routerLink="/wallet/deposit"
+        [class.active]="walletService.Page === 'deposit'"
+      >
+        Deposit
+      </a>
+
+      <a
+        routerLink="/wallet/withdraw"
+        [class.active]="walletService.Page === 'withdraw'"
+      >
+        Withdraw
+      </a>
+
+    </nav>
+
+
+    <!-- LOCAL CURRENCY SELECTOR -->
+    @if (walletService?.localMethods?.length > 0) {
+
+      <section class="local-currency-section">
+
+        <div class="selection-heading">
+          <div>
+            <small>Select Currency</small>
+            <h2>Choose local payment currency</h2>
+          </div>
+        </div>
+
+        <div class="local-currency-grid">
+
+          @for (method of walletService.localMethods; track method.code) {
+
+            <button
+              type="button"
+              class="local-currency-card"
+              [class.active]="walletService?.selectedLocal?.code === method.code"
+              (click)="selectCurrency(method)"
+            >
+              <span class="currency-flag">
+                {{ method.flag }}
+              </span>
+
+              <span class="currency-details">
+                <strong>{{ method.code }}</strong>
+                <small>{{ method.name }}</small>
+              </span>
+
+              @if (walletService?.selectedLocal?.code === method.code) {
+                <i class="bi bi-check-circle-fill currency-check"></i>
+              }
+
+            </button>
+
+          }
+
+        </div>
+
+      </section>
+
+    }
+
+  </div>
+
+</section>

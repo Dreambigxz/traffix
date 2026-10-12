@@ -1,4 +1,4 @@
-<div *ngIf="walletService()?.quickNav.storeData?.store['wallet'] as walletDir" class="local-page">
+<div *ngIf="walletService()?.quickNav.storeData?.store['wallet'] as walletDir" class="local-page container">
 
   <div *ngIf="!walletService()?.quickNav.storeData.store['deposit']?.length; else pendingDeposits">
     <!-- Amount Card -->

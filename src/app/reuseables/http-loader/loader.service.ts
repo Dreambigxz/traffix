@@ -38,8 +38,6 @@ export class LoaderService {
 
   show(method: string = 'GET'): symbol {
 
-    console.log({method});
-
     const requestId = Symbol('loader-request');
 
     this.activeRequests.set(requestId, method.toUpperCase());

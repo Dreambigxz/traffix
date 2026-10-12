@@ -19,7 +19,7 @@ import { WithdrawMethodComponent } from './withdraw-method/w-method.component';
 import { TimeFormatPipe } from '../../reuseables/pipes/time-format.pipe';
 import { CountdownPipe } from '../../reuseables/pipes/countdown.pipe';
 
-import { CryptoHeaderComponent } from "../crypto-header/crypto-header.component";
+import { WalletComponent } from "../wallet.component";
 
 import {
   RouterLink
@@ -46,8 +46,8 @@ type AssetFilter =
     CurrencyConverterPipe,
     TimeFormatPipe,
     CountdownPipe,
-    CryptoHeaderComponent,
-    RouterLink
+    RouterLink,
+    WalletComponent
 
   ],
   templateUrl: './withdraw.component.html',

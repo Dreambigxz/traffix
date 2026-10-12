@@ -4,12 +4,11 @@
 <div class="wallet-page">
 
     <!-- HEADER -->
+    <app-wallet
+      [walletService]='walletService'
+      />
 
-    <app-crypto-header
-      [assets]=walletService.assets()
-      [walletService]="walletService"
-      [balance]="walletService.quickNav.storeData.store['wallet']?.balance"
-    />
+
 
     <!-- BODY -->
     <div class="wallet-body">

@@ -134,22 +134,53 @@ export class WalletService {
 
     initSetting(){
 
+      this.hidePayWith = false
+
       const currencies = this.quickNav.storeData.get("init_currencies")
       const settings = this.quickNav.storeData.get('wallet')?.settings
       this.assets.set(
           this.quickNav.storeData.get("assets") ?? []
         );
 
+        this.localMethods = this.quickNav.storeData.get("local") || [ ]
+
+        console.log("localMethod<>", this.localMethods);
+
         const [payWith, savedMethod] = [
           this.quickNav.storeData.get("payWith")?.toLowerCase(),
           this.quickNav.storeData.get("savedMethod")
         ]
 
+        if (payWith) {
+          this.selectedTab$.next(payWith);
+          this.hidePayWith = true
+
+          if (payWith==='local') {
+            this.localMethods= this.localMethods.filter((c:any)=>c.code===savedMethod)
+            this.selectLocal(this.localMethods[0])
+          }else{
+            // this.cryptoMethods= this.cryptoMethods.filter((c:any)=>c.code===savedMethod)
+          }
+
+        }
+
+        console.log([payWith, savedMethod], {"selectedTab": this.selectedTab});
+
+
       this.selectCrypto(savedMethod || "BNB")
       this.savedAdd = this.quickNav.storeData.get("wallet")?.saved_add
       this.withdraw_fee =  settings.withdraw_fee
 
-      // this.isFirstDevice = this.quickNav.storeData.get("wallet")
+      return {
+
+        deposit: (self:any) =>{
+          const local_banks = this.quickNav.storeData.get("local_banks")
+            if (local_banks?.length == 1) {
+              self.selectedAccount  = local_banks[0];
+            }
+        }
+      }
+
     }
 
     // ===========================

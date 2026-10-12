@@ -5,13 +5,8 @@
 
     <!-- HEADER -->
 
-    <!-- <app-wallet-header>
-      </app-wallet-header> -->
-
-      <app-crypto-header
-        [assets]=walletService.assets()
-        [walletService]="walletService"
-        [balance]="walletService.quickNav.storeData.store['wallet']?.balance"
+    <app-wallet
+      [walletService]='walletService'
       />
 
     <!-- BODY -->
@@ -131,14 +126,14 @@
           }
         </ng-container>
 
-        <ng-container *ngIf="walletService.selectedTab=='local'">
+        <!-- <ng-container *ngIf="walletService.selectedTab=='local'"> -->
 
           <app-local
             [hidden]="walletService.selectedTab!=='local'"
             [walletService]="walletService"
             [selectedAccount]="selectedAccount">
           </app-local>
-          </ng-container>
+          <!-- </ng-container> -->
 
       </div>
 </div>
