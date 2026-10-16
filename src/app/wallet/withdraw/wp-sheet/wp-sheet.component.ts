@@ -87,9 +87,12 @@ export class WpSheetComponent implements OnInit, OnDestroy {
       if (selectedTab==='crypto') {
         this.togglePinRequired(isFirstDevice, this.cryptoForm)
         return this.cryptoForm
+      }else{
+        this.togglePinRequired(isFirstDevice, this.localForm)
+        return this.localForm;
       }
 
-      return this.localForm
+      // return
 
     }
 
